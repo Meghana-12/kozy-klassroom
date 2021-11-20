@@ -22,7 +22,7 @@ export default function ClassSelect(props) {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={classID}
+          // value={classID}
           label="ClassID"
           onChange={handleChange}
         >
