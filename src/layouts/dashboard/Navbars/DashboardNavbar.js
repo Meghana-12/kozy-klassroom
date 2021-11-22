@@ -71,6 +71,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
       console.log('dashboard nav err -2');
     }
   }, [curUser]);
+  const handleAddClass = () => {};
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -84,7 +85,10 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         <Box sx={{ flexGrow: 1 }} />
 
         <ClassSelect options={options} id="class-id" />
-        <Button variant="contained"> + Add Class</Button>
+        <Button variant="contained" onClick={handleAddClass}>
+          {' '}
+          + Add Class
+        </Button>
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           {/* <LanguagePopover /> */}
           {/* <NotificationsPopover /> */}

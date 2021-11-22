@@ -2,16 +2,18 @@ import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import homeFill from '@iconify/icons-eva/home-fill';
 import personFill from '@iconify/icons-eva/person-fill';
+// import exitFill from '@iconify/icons-eva/exit-fill';
 import settings2Fill from '@iconify/icons-eva/settings-2-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import { alpha } from '@mui/material/styles';
 import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '@mui/material';
 // components
+import { signOut } from 'firebase/auth';
 import MenuPopover from '../../components/MenuPopover';
 //
 import account from '../../_mocks_/account';
-
+import { auth } from '../../firebase/initFirebase';
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -37,12 +39,22 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
-
+  const navigate = useNavigate();
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        alert('signed out');
+        navigate('/');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -108,9 +120,8 @@ export default function AccountPopover() {
             {option.label}
           </MenuItem>
         ))}
-
         <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined">
+          <Button fullWidth color="inherit" variant="outlined" onClick={handleSignOut}>
             Logout
           </Button>
         </Box>
