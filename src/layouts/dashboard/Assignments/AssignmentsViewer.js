@@ -71,22 +71,19 @@ export default function AssignmentsViewer() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setCurUser(user);
-      // ...
-    } else {
-      navigate('/login');
     }
   });
   React.useEffect(() => {
-    if (auth) {
+    if (curUser && classSelected) {
       const docRef = doc(db, 'classes', classSelected);
-      getDoc(docRef).then((classDetails) => {
-        console.log(classDetails?.data());
-        setDocs(classDetails?.data()?.assignments);
-      });
-    } else {
-      navigate('/login');
+      if (docRef) {
+        getDoc(docRef).then((classDetails) => {
+          console.log(classDetails?.data());
+          setDocs(classDetails?.data()?.assignments);
+        });
+      }
     }
-  }, [auth, classSelected, navigate]);
+  }, [curUser, classSelected, navigate]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';

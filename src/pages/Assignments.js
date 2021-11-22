@@ -25,7 +25,7 @@ import Switch from '@mui/material/Switch';
 import Paper from '@mui/material/Paper';
 import Slide from '@mui/material/Slide';
 import FormControlLabel from '@mui/material/FormControlLabel';
-// import AssignmentsViewer from '../layouts/dashboard/Assignments/AssignmentsViewer';
+import AssignmentsViewer from '../layouts/dashboard/Assignments/AssignmentsViewer';
 import { MyContext } from '../utils/context';
 import Page from '../components/Page';
 import { AppTasks, Announcements, Classes } from '../components/_dashboard/app';
@@ -82,7 +82,7 @@ export default function Assignments() {
           <Grid item xs={12} md={6} lg={8}>
             <AppTasks />
           </Grid> */}
-        {/* <AssignmentsViewer assignments={assignments} /> */}
+        <AssignmentsViewer assignments={assignments} />
       </Container>
     </Page>
   );

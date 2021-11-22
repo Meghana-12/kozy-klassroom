@@ -11,8 +11,8 @@ import NavSection from '../../../components/NavSection';
 import { MHidden } from '../../../components/@material-extend';
 //
 import sidebarConfig from './SidebarConfig';
-import account from '../../../_mocks_/account';
-
+// import account from '../../../_mocks_/account';
+import { auth } from '../../../firebase/initFirebase';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -41,7 +41,7 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-
+  const account = auth?.currentUser;
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -65,13 +65,13 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={account?.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {account?.displayName}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                {/* {account.type} */}
               </Typography>
             </Box>
           </AccountStyle>
@@ -105,16 +105,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
               Get more?
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              From only $69
+              From only $100 per class
             </Typography>
           </Box>
 
-          <Button
-            fullWidth
-            href="https://material-ui.com/store/items/minimal-dashboard/"
-            target="_blank"
-            variant="contained"
-          >
+          <Button fullWidth href="#" target="_blank" variant="contained">
             Upgrade to Pro
           </Button>
         </Stack>
