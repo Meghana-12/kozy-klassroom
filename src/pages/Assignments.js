@@ -25,12 +25,12 @@ import Switch from '@mui/material/Switch';
 import Paper from '@mui/material/Paper';
 import Slide from '@mui/material/Slide';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import AssignmentsViewer from '../layouts/dashboard/AssignmentsViewer';
+import AssignmentsViewer from '../layouts/dashboard/Assignments/AssignmentsViewer';
 import { MyContext } from '../utils/context';
 import Page from '../components/Page';
 import { AppTasks, Announcements, Classes } from '../components/_dashboard/app';
 import { db } from '../firebase/initFirebase';
-import { AssignmentUploader } from '../layouts/dashboard/AssignmentUploader';
+import { AssignmentUploader } from '../layouts/dashboard/Assignments/AssignmentUploader';
 // import Box from '@mui/material/Box';
 // ----------------------------------------------------------------------
 

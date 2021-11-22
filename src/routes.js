@@ -8,11 +8,11 @@ import Register from './pages/Register';
 import Assignments from './pages/Assignments';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
-import User from './layouts/dashboard/AssignmentsViewer';
+import User from './layouts/dashboard/Assignments/AssignmentsViewer';
 import NotFound from './pages/Page404';
 import PrivateRoute from './components/PrivateRoute';
 import Announcements from './pages/Announcements';
-// import Assignments from './pages/Assignments';
+import Students from './pages/Students';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -33,10 +33,9 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
+        // { path: '/', element: <Assignments /> },
         { path: 'assignments', element: <Assignments /> },
-        { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
-        { path: 'blog', element: <Blog /> },
+        { path: 'students', element: <Students /> },
         { path: 'announcements', element: <Announcements /> }
       ]
     },

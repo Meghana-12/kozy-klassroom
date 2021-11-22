@@ -8,14 +8,14 @@ import { Box, Stack, AppBar, Toolbar, IconButton, Button } from '@mui/material';
 // components
 import { getDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import ClassSelect from '../../components/_dashboard/app/ClassSelect';
-import { MHidden } from '../../components/@material-extend';
+import ClassSelect from '../../../components/_dashboard/app/ClassSelect';
+import { MHidden } from '../../../components/@material-extend';
 //
-import Searchbar from './Searchbar';
-import AccountPopover from './AccountPopover';
-import LanguagePopover from './LanguagePopover';
-import NotificationsPopover from './NotificationsPopover';
-import { db } from '../../firebase/initFirebase';
+import Searchbar from '../Searchbar';
+import AccountPopover from '../AccountPopover';
+import LanguagePopover from '../LanguagePopover';
+import NotificationsPopover from '../NotificationsPopover';
+import { db } from '../../../firebase/initFirebase';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;

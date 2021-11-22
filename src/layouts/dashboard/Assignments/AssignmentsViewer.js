@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
   Card,
@@ -24,16 +24,17 @@ import {
 import { setDoc, doc, getDoc, getDocs, collection, query } from 'firebase/firestore';
 import moment from 'moment';
 import downloadFill from '@iconify/icons-eva/edit-fill';
-import Page from '../../components/Page';
-import Label from '../../components/Label';
-import Scrollbar from '../../components/Scrollbar';
-import SearchNotFound from '../../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../../components/_dashboard/user';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import Page from '../../../components/Page';
+import Label from '../../../components/Label';
+import Scrollbar from '../../../components/Scrollbar';
+import SearchNotFound from '../../../components/SearchNotFound';
+import { UserListHead, UserListToolbar, UserMoreMenu } from '../../../components/_dashboard/user';
 
-import { MyContext } from '../../utils/context';
-import { db } from '../../firebase/initFirebase';
+import { MyContext } from '../../../utils/context';
+import { db } from '../../../firebase/initFirebase';
 //
-import docs from '../../_mocks_/user';
+import docs from '../../../_mocks_/user';
 import { descendingComparator, getComparator, applySortFilter } from './viewerFunctions';
 // ----------------------------------------------------------------------
 
@@ -44,7 +45,9 @@ const TABLE_HEAD = [
   { id: 'average', label: 'Average Score', alignRight: false },
   { id: 'deadline', label: 'Deadline', alignRight: false },
 
-  { id: 'download', label: '', alignRight: false },
+  { id: 'download', label: 'Download Assignment', alignRight: false },
+  { id: 'submissions', label: 'Submissions', alignRight: false },
+  { id: 'number-submissions', label: 'Number of Submissions', alignRight: false },
   { id: '' }
 ];
 
@@ -58,16 +61,33 @@ export default function AssignmentsViewer() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [curUser, setCurUser] = React.useState();
   const [docs, setDocs] = React.useState([]);
 
   const { classSelected } = React.useContext(MyContext);
+
+  const auth = getAuth();
+  const navigate = useNavigate();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurUser(user);
+      // ...
+    } else {
+      navigate('/login');
+    }
+  });
   React.useEffect(() => {
-    const docRef = doc(db, 'classes', classSelected);
-    getDoc(docRef).then((classDetails) => {
-      console.log(classDetails?.data());
-      setDocs(classDetails?.data()?.assignments);
-    });
+    if (auth) {
+      const docRef = doc(db, 'classes', classSelected);
+      getDoc(docRef).then((classDetails) => {
+        console.log(classDetails?.data());
+        setDocs(classDetails?.data()?.assignments);
+      });
+    } else {
+      navigate('/login');
+    }
   }, []);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -118,9 +138,9 @@ export default function AssignmentsViewer() {
 
   const filteredUsers = applySortFilter(docs, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredUsers.length === 0;
-  const handleAssignmentDownload = (name) => {
-    console.log(name);
+  const isUserNotFound = filteredUsers?.length === 0;
+  const handleAssignmentDownload = (name, url) => {
+    console.log(name, url);
   };
   return (
     <Page title="User | Minimal-UI">
@@ -148,7 +168,7 @@ export default function AssignmentsViewer() {
                   {filteredUsers
                     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     ?.map((row) => {
-                      const { name, score, deadline, publishedAt, weightage } = row;
+                      const { name, score, deadline, publishedAt, weightage, url } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
                       const status = deadline > cur ? 'success' : 'banned';
@@ -190,8 +210,17 @@ export default function AssignmentsViewer() {
                             </Label>
                           </TableCell>
                           <TableCell align="right">
-                            <Button variant="contained" onClick={handleAssignmentDownload(name)}>
+                            <Button variant="contained">
+                              {/* <a href={url} target="_blank" rel="noreferrer"> */}
                               <Icon icon={downloadFill} width={24} height={24} />
+                              {/* </a> */}
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="contained">
+                              {/* <a href={url} target="_blank" rel="noreferrer"> */}
+                              <Icon icon={downloadFill} width={24} height={24} />
+                              {/* </a> */}
                             </Button>
                           </TableCell>
                           <TableCell align="right">

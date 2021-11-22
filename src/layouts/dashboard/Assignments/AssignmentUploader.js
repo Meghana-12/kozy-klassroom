@@ -33,9 +33,9 @@ import Switch from '@mui/material/Switch';
 import Paper from '@mui/material/Paper';
 import Slide from '@mui/material/Slide';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { MyContext } from '../../utils/context';
-import Page from '../../components/Page';
-import { db } from '../../firebase/initFirebase';
+import { MyContext } from '../../../utils/context';
+import Page from '../../../components/Page';
+import { db } from '../../../firebase/initFirebase';
 
 export const AssignmentUploader = (props) => {
   const today = new Date();
@@ -178,6 +178,12 @@ export const AssignmentUploader = (props) => {
         </Grid>
         <Grid item>
           <Input required type="file" onChange={handleChange} />
+          {/* <label htmlFor="contained-button-file">
+            <Input accept="image/*" id="contained-button-file" multiple type="file" />
+            <Button variant="contained" component="span">
+              Upload
+            </Button>
+          </label> */}
         </Grid>
         <Grid item>
           <Button variant="contained" fullWidth disabled={!file} type="submit">
