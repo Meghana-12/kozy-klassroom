@@ -8,6 +8,7 @@ import GlobalStyles from './theme/globalStyles';
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/charts/BaseOptionChart';
 import { MyContext } from './utils/context';
+import { auth } from './firebase/initFirebase';
 // ----------------------------------------------------------------------
 
 export default function App() {

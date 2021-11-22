@@ -86,7 +86,7 @@ export default function AssignmentsViewer() {
     } else {
       navigate('/login');
     }
-  }, []);
+  }, [auth, classSelected, navigate]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
