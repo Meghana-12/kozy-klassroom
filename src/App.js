@@ -15,7 +15,7 @@ export default function App() {
   const [user, setUser] = React.useState();
   const [dbUser, setdbUser] = React.useState();
   return (
-    <MyContext.Provider value={{ classSelected, setClassSelected }}>
+    <MyContext.Provider value={{ classSelected, setClassSelected, user, setUser }}>
       <ThemeConfig>
         <ScrollToTop />
         <GlobalStyles />

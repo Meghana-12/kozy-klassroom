@@ -11,7 +11,7 @@ import {
   Card
 } from '@mui/material';
 // components
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc, arrayUnion } from 'firebase/firestore';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { Icon } from '@iconify/react';
@@ -25,11 +25,11 @@ import Switch from '@mui/material/Switch';
 import Paper from '@mui/material/Paper';
 import Slide from '@mui/material/Slide';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import AssignmentsViewer from '../layouts/dashboard/Assignments/AssignmentsViewer';
+// import AssignmentsViewer from '../layouts/dashboard/Assignments/AssignmentsViewer';
 import { MyContext } from '../utils/context';
 import Page from '../components/Page';
 import { AppTasks, Announcements, Classes } from '../components/_dashboard/app';
-import { db } from '../firebase/initFirebase';
+import { db, auth } from '../firebase/initFirebase';
 import { AssignmentUploader } from '../layouts/dashboard/Assignments/AssignmentUploader';
 // import Box from '@mui/material/Box';
 // ----------------------------------------------------------------------
@@ -37,38 +37,39 @@ import { AssignmentUploader } from '../layouts/dashboard/Assignments/AssignmentU
 export default function Assignments() {
   const { classSelected } = React.useContext(MyContext);
 
+  const [curUser, setCurUser] = React.useState(null);
   const [checked, setChecked] = React.useState(false);
   const [assignments, setAssignments] = React.useState([]);
   // const [downloadURL, setDownloadURL] = React.useState('');
   const containerRef = React.useRef(null);
-
+  // const [user, setUser] = React.useState();
   const handleShow = () => {
     setChecked((prev) => !prev);
   };
 
-  const auth = getAuth();
-  const user = auth?.currentUser;
-  React.useEffect(() => {
-    if (user === null) {
-      navigate('/login');
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurUser(user);
+      console.log('nav', user);
+    } else {
+      console.log('dashboard nav err');
     }
-  }, [auth]);
-  const navigate = useNavigate();
-  console.log(user);
+  });
 
+  const navigate = useNavigate();
   const storage = getStorage();
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
         <Box sx={{ pb: 5 }}>
           <Typography variant="h4">
-            Hi, {user?.displayName} .
+            Hi, {curUser?.displayName} .
             {classSelected && <div> Selected Class : {classSelected} </div>}
           </Typography>
         </Box>
         <Card sx={{ p: 5, mb: 5 }}>
           {' '}
-          <AssignmentUploader classSelected={classSelected} user={user} storage={storage} />{' '}
+          <AssignmentUploader classSelected={classSelected} user={curUser} storage={storage} />{' '}
         </Card>
 
         {/* <Grid item xs={12} md={6} lg={4}>
@@ -81,7 +82,7 @@ export default function Assignments() {
           <Grid item xs={12} md={6} lg={8}>
             <AppTasks />
           </Grid> */}
-        <AssignmentsViewer assignments={assignments} />
+        {/* <AssignmentsViewer assignments={assignments} /> */}
       </Container>
     </Page>
   );

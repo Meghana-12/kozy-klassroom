@@ -7,7 +7,7 @@ import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton, Button } from '@mui/material';
 // components
 import { getDoc, doc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import ClassSelect from '../../../components/_dashboard/app/ClassSelect';
 import { MHidden } from '../../../components/@material-extend';
 //
@@ -15,7 +15,7 @@ import Searchbar from '../Searchbar';
 import AccountPopover from '../AccountPopover';
 import LanguagePopover from '../LanguagePopover';
 import NotificationsPopover from '../NotificationsPopover';
-import { db } from '../../../firebase/initFirebase';
+import { db, auth } from '../../../firebase/initFirebase';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -47,16 +47,30 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
-  const auth = getAuth();
+  // const auth = getAuth();
+  const [curUser, setCurUser] = React.useState(null);
+  // console.log('nav', auth?.currentUser);
   const [options, setOptions] = React.useState([]);
-  const docRef = doc(db, 'users', auth?.currentUser?.email);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurUser(user);
+      console.log('nav', user);
+    } else {
+      console.log('dashboard nav err');
+    }
+  });
   React.useEffect(() => {
-    getDoc(docRef).then((docSnap) => {
-      console.log(docSnap.data());
-      setOptions(docSnap.data().classes);
-    });
-  }, []);
-
+    if (curUser) {
+      console.log('abcd');
+      const docRef = doc(db, 'users', curUser?.email);
+      getDoc(docRef).then((docSnap) => {
+        console.log(docSnap?.data());
+        setOptions(docSnap?.data()?.classes);
+      });
+    } else {
+      console.log('dashboard nav err -2');
+    }
+  }, [curUser]);
   return (
     <RootStyle>
       <ToolbarStyle>
