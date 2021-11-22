@@ -7,8 +7,8 @@ import Select from '@mui/material/Select';
 import { MyContext } from '../../../utils/context';
 
 export default function ClassSelect(props) {
-  const [classID, setClass] = React.useState(props?.options[0]?.classID);
   const { classSelect, setClassSelected } = React.useContext(MyContext);
+  const [classID, setClass] = React.useState('class ID' || props?.options[0]?.classID);
   setClassSelected(classID);
   const handleChange = (event) => {
     setClass(event.target.value);
@@ -22,7 +22,7 @@ export default function ClassSelect(props) {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          // value={classID}
+          value={classID}
           label="ClassID"
           onChange={handleChange}
         >

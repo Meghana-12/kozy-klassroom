@@ -3,7 +3,7 @@ export { default as AppConversionRates } from './AppConversionRates';
 export { default as AppCurrentSubject } from './AppCurrentSubject';
 export { default as AppCurrentVisits } from './AppCurrentVisits';
 export { default as AppItemOrders } from './AppItemOrders';
-export { default as Announcements } from './Announcements';
+export { default as Announcements } from '../../../pages/Announcements';
 export { default as AppNewUsers } from './AppNewUsers';
 export { default as AppOrderTimeline } from './AppOrderTimeline';
 export { default as AppTasks } from './AppTasks';

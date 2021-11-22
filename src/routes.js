@@ -11,6 +11,7 @@ import Blog from './pages/Blog';
 import User from './layouts/dashboard/AssignmentsViewer';
 import NotFound from './pages/Page404';
 import PrivateRoute from './components/PrivateRoute';
+import Announcements from './pages/Announcements';
 // import Assignments from './pages/Assignments';
 // ----------------------------------------------------------------------
 
@@ -36,7 +37,7 @@ export default function Router() {
         { path: 'user', element: <User /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
-        { path: 'announcements', element: <div /> }
+        { path: 'announcements', element: <Announcements /> }
       ]
     },
     { path: '*', element: <Navigate to="/404" replace /> }

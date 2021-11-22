@@ -12,7 +12,15 @@ import {
 } from '@mui/material';
 // components
 import { getAuth } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, Timestamp } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  Timestamp,
+  collection
+} from 'firebase/firestore';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
@@ -71,7 +79,7 @@ export const AssignmentUploader = (props) => {
                 alert('Upload is paused');
                 break;
               case 'running':
-                alert('Upload is running');
+                // alert('Upload is running');
                 break;
               default:
                 break;
@@ -98,9 +106,24 @@ export const AssignmentUploader = (props) => {
                       url
                     }
                   ]
+                ),
+                announcements: arrayUnion(
+                  ...[
+                    {
+                      name: form?.name,
+                      score: form?.score,
+                      deadline: Timestamp.fromDate(form.deadline),
+                      weightage: form?.weightage,
+                      publishedDate: Timestamp.fromDate(new Date()),
+                      author: user?.email,
+                      class: classSelected,
+                      url,
+                      type: 'assignment'
+                    }
+                  ]
                 )
               };
-              updateDoc(docRef, docData);
+              setDoc(docRef, docData, { merge: true });
             });
           }
         );
