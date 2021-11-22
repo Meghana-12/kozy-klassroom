@@ -4,8 +4,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import NativeSelect from '@mui/material/NativeSelect';
-import { MyContext } from '../../../utils/context';
+import { MyContext } from '../../utils/context';
 
 export default function ClassSelect(props) {
   const { classSelected, setClassSelected } = React.useContext(MyContext);
@@ -33,25 +32,6 @@ export default function ClassSelect(props) {
             </MenuItem>
           ))}
         </Select>
-        {/* <FormControl fullWidth> */}
-        {/* <InputLabel variant="standard" htmlFor="uncontrolled-native">
-          Class ID
-        </InputLabel>
-        <NativeSelect
-          defaultValue={30}
-          inputProps={{
-            name: 'age',
-            id: 'uncontrolled-native'
-          }}
-          onChange={handleChange}
-        >
-          {props.options?.map((option) => (
-            <MenuItem key={option?.classID} value={option?.classID}>
-              {option?.classID}
-            </MenuItem>
-          ))}
-        </NativeSelect> */}
-        {/* </FormControl> */}
       </FormControl>
     </Box>
   );

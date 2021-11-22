@@ -25,16 +25,16 @@ import { setDoc, doc, getDoc, getDocs, collection, query } from 'firebase/firest
 import moment from 'moment';
 import downloadFill from '@iconify/icons-eva/edit-fill';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Page from '../../../components/Page';
-import Label from '../../../components/Label';
-import Scrollbar from '../../../components/Scrollbar';
-import SearchNotFound from '../../../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../../../components/_dashboard/user';
+import Page from '../../components/Page';
+import Label from '../../components/Label';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import { UserListHead, UserListToolbar, UserMoreMenu } from '../../components/_dashboard/user';
 
-import { MyContext } from '../../../utils/context';
-import { db } from '../../../firebase/initFirebase';
+import { MyContext } from '../../utils/context';
+import { db } from '../../firebase/initFirebase';
 //
-import docs from '../../../_mocks_/user';
+import docs from '../../_mocks_/user';
 import { descendingComparator, getComparator, applySortFilter } from './viewerFunctions';
 // ----------------------------------------------------------------------
 

@@ -16,8 +16,8 @@ import AuthLayout from '../layouts/AuthLayout';
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
-import { LoginForm } from '../components/authentication/login';
-import AuthSocial from '../components/authentication/AuthSocial';
+import { LoginForm } from '../components-used/authentication/login';
+import AuthSocial from '../components-used/authentication/AuthSocial';
 // material
 import { db } from '../firebase/initFirebase';
 // ----------------------------------------------------------------------

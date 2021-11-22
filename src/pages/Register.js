@@ -7,8 +7,8 @@ import AuthLayout from '../layouts/AuthLayout';
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
-import { RegisterForm } from '../components/authentication/register';
-import AuthSocial from '../components/authentication/AuthSocial';
+import { RegisterForm } from '../components-used/authentication/register';
+import AuthSocial from '../components-used/authentication/AuthSocial';
 
 // ----------------------------------------------------------------------
 

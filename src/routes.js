@@ -1,6 +1,6 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
-import DashboardLayout from './layouts/dashboard';
+import DashboardLayout from './components-used/dashboard-layout';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import Login from './pages/Login';
@@ -8,7 +8,6 @@ import Register from './pages/Register';
 import Assignments from './pages/Assignments';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
-import User from './layouts/dashboard/Assignments/AssignmentsViewer';
 import NotFound from './pages/Page404';
 import PrivateRoute from './components/PrivateRoute';
 import Announcements from './pages/Announcements';

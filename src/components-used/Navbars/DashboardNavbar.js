@@ -7,15 +7,15 @@ import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton, Button } from '@mui/material';
 // components
 import { getDoc, doc } from 'firebase/firestore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import ClassSelect from '../../../components/_dashboard/app/ClassSelect';
-import { MHidden } from '../../../components/@material-extend';
+import { onAuthStateChanged } from 'firebase/auth';
+import ClassSelect from '../../components/_dashboard/app/ClassSelect';
+import { MHidden } from '../../components/@material-extend';
 //
-import Searchbar from '../Searchbar';
-import AccountPopover from '../AccountPopover';
-import LanguagePopover from '../LanguagePopover';
-import NotificationsPopover from '../NotificationsPopover';
-import { db, auth } from '../../../firebase/initFirebase';
+import Searchbar from '../../layouts/dashboard/Searchbar';
+import AccountPopover from './AccountPopover';
+import LanguagePopover from '../../layouts/dashboard/LanguagePopover';
+import NotificationsPopover from '../../layouts/dashboard/NotificationsPopover';
+import { db, auth } from '../../firebase/initFirebase';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -47,9 +47,7 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
-  // const auth = getAuth();
   const [curUser, setCurUser] = React.useState(null);
-  // console.log('nav', auth?.currentUser);
   const [options, setOptions] = React.useState([]);
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -91,7 +89,6 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         </Button>
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           {/* <LanguagePopover /> */}
-          {/* <NotificationsPopover /> */}
           <AccountPopover />
         </Stack>
       </ToolbarStyle>

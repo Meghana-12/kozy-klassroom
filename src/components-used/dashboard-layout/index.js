@@ -4,8 +4,8 @@ import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 //
 import { PrivateRoute } from '../../components/PrivateRoute';
-import DashboardNavbar from './Navbars/DashboardNavbar';
-import DashboardSidebar from './Navbars/DashboardSidebar';
+import DashboardNavbar from '../Navbars/DashboardNavbar';
+import DashboardSidebar from '../Navbars/DashboardSidebar';
 
 // ----------------------------------------------------------------------
 

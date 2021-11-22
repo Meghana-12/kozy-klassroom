@@ -1,46 +1,18 @@
 // material
 import React from 'react';
-import {
-  Box,
-  Grid,
-  Container,
-  Typography,
-  Button,
-  FormControl,
-  TextField,
-  Card
-} from '@mui/material';
+import { Grid, Button, TextField } from '@mui/material';
 // components
-import { getAuth } from 'firebase/auth';
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  Timestamp,
-  collection
-} from 'firebase/firestore';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Icon } from '@iconify/react';
-import plusFill from '@iconify/icons-eva/plus-fill';
-import { getStorage, ref, getDownloadURL, uploadBytesResumable, listAll } from 'firebase/storage';
+import { doc, setDoc, arrayUnion, Timestamp } from 'firebase/firestore';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import Input from '@mui/material/Input';
 import { DateTimePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import Switch from '@mui/material/Switch';
-import Paper from '@mui/material/Paper';
-import Slide from '@mui/material/Slide';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { MyContext } from '../../../utils/context';
-import Page from '../../../components/Page';
-import { db } from '../../../firebase/initFirebase';
+import { db } from '../../firebase/initFirebase';
 
 export const AssignmentUploader = (props) => {
   const today = new Date();
   const { user, storage, classSelected } = props;
-  //   db.settings({ ignoreUndefinedProperties: true });
 
   const [file, setFile] = React.useState(null);
   const [form, setForm] = React.useState({ name: '', score: '-1', weightage: 0, deadline: today });
