@@ -13,10 +13,13 @@ import { auth } from './firebase/initFirebase';
 
 export default function App() {
   const [classSelected, setClassSelected] = React.useState();
+  const classSelectedCallback = React.useCallback((classID) => {
+    setClassSelected(classID);
+  }, []);
   const [user, setUser] = React.useState();
   const [dbUser, setdbUser] = React.useState();
   return (
-    <MyContext.Provider value={{ classSelected, setClassSelected, user, setUser }}>
+    <MyContext.Provider value={{ classSelected, classSelectedCallback, user, setUser }}>
       <ThemeConfig>
         <ScrollToTop />
         <GlobalStyles />

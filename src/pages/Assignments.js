@@ -32,7 +32,12 @@ export default function Assignments() {
         </Box>
         <Card sx={{ p: 5, mb: 5 }}>
           {' '}
-          <AssignmentUploader classSelected={classSelected} user={curUser} storage={storage} />{' '}
+          <AssignmentUploader
+            classSelected={classSelected}
+            user={curUser}
+            storage={storage}
+            curUser={curUser}
+          />{' '}
         </Card>
         <AssignmentsViewer />
       </Container>

@@ -4,11 +4,24 @@ import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton, Button } from '@mui/material';
+import {
+  Box,
+  Stack,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Button,
+  Card,
+  TextField,
+  Grid
+} from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 // components
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, arrayUnion } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import ClassSelect from '../../components/_dashboard/app/ClassSelect';
+import { setDoc, Timestamp, updateDoc } from '@firebase/firestore';
+import ClassSelect from './ClassSelect';
 import { MHidden } from '../../components/@material-extend';
 //
 import Searchbar from '../../layouts/dashboard/Searchbar';
@@ -16,6 +29,9 @@ import AccountPopover from './AccountPopover';
 import LanguagePopover from '../../layouts/dashboard/LanguagePopover';
 import NotificationsPopover from '../../layouts/dashboard/NotificationsPopover';
 import { db, auth } from '../../firebase/initFirebase';
+import { MyContext } from '../../utils/context';
+import InstructorModal from './InstructorModal';
+import StudentModal from './StudentModal';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -40,6 +56,16 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   }
 }));
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  boxShadow: 24,
+  p: 4
+};
+
 // ----------------------------------------------------------------------
 
 DashboardNavbar.propTypes = {
@@ -48,28 +74,34 @@ DashboardNavbar.propTypes = {
 
 export default function DashboardNavbar({ onOpenSidebar }) {
   const [curUser, setCurUser] = React.useState(null);
-  const [options, setOptions] = React.useState([]);
+  const [dbUser, setdbUser] = React.useState();
+  const [open, setOpen] = React.useState(false);
+  const [errorText, setErrorText] = React.useState(null);
+  const handleClose = () => setOpen(false);
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setCurUser(user);
-      console.log('nav', user);
+      // console.log('nav', user);
     } else {
-      console.log('dashboard nav err');
+      // console.log('dashboard nav err');
     }
   });
   React.useEffect(() => {
     if (curUser) {
-      console.log('abcd');
+      // console.log('abcd');
       const docRef = doc(db, 'users', curUser?.email);
       getDoc(docRef).then((docSnap) => {
-        console.log(docSnap?.data());
-        setOptions(docSnap?.data()?.classes);
+        setdbUser(docSnap?.data());
       });
     } else {
-      console.log('dashboard nav err -2');
+      // console.log('dashboard nav err -2');
     }
   }, [curUser]);
-  const handleAddClass = () => {};
+  const handleAddClass = () => {
+    setOpen(true);
+  };
+
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -82,11 +114,30 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
-        <ClassSelect options={options} id="class-id" />
-        <Button variant="contained" onClick={handleAddClass}>
-          {' '}
-          + Add Class
-        </Button>
+        <ClassSelect id="class-id" />
+        {dbUser?.type === 'instructor' ? (
+          <Button variant="contained" onClick={handleAddClass}>
+            {' '}
+            + Add Class
+          </Button>
+        ) : (
+          <Button variant="contained" onClick={handleAddClass}>
+            {' '}
+            + Join Class
+          </Button>
+        )}
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          {dbUser?.type === 'instructor' ? (
+            <InstructorModal curUser={curUser} />
+          ) : (
+            <StudentModal curUser={curUser} />
+          )}
+        </Modal>
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           {/* <LanguagePopover /> */}
           <AccountPopover />
