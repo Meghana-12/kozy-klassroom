@@ -3,16 +3,19 @@ import React from 'react';
 import { Box, Container, Typography, Card } from '@mui/material';
 // components
 import { onAuthStateChanged } from 'firebase/auth';
-import AssignmentsViewer from '../components-used/Assignments/AssignmentsViewer';
+import { doc, getDoc } from 'firebase/firestore';
+import InstructorAssignmentsViewer from '../components-used/Assignments/Viewer/Instructor';
+import StudentAssignmentsViewer from '../components-used/Assignments/Viewer/Student';
 import { MyContext } from '../utils/context';
 import Page from '../components/Page';
-import { auth, storage } from '../firebase/initFirebase';
+import { auth, storage, db } from '../firebase/initFirebase';
 import { AssignmentUploader } from '../components-used/Assignments/AssignmentUploader';
 // ----------------------------------------------------------------------
 
 export default function Assignments() {
   const { classSelected } = React.useContext(MyContext);
   const [curUser, setCurUser] = React.useState(null);
+  const [dbUser, setdbUser] = React.useState();
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setCurUser(user);
@@ -21,6 +24,18 @@ export default function Assignments() {
       console.log('dashboard nav err');
     }
   });
+  React.useEffect(() => {
+    if (curUser) {
+      // console.log('abcd');
+      const docRef = doc(db, 'users', curUser?.email);
+      getDoc(docRef).then((docSnap) => {
+        setdbUser(docSnap?.data());
+      });
+    } else {
+      // console.log('dashboard nav err -2');
+    }
+  }, [curUser]);
+
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
@@ -30,16 +45,21 @@ export default function Assignments() {
             {classSelected && <div> Selected Class : {classSelected} </div>}
           </Typography>
         </Box>
-        <Card sx={{ p: 5, mb: 5 }}>
-          {' '}
-          <AssignmentUploader
-            classSelected={classSelected}
-            user={curUser}
-            storage={storage}
-            curUser={curUser}
-          />{' '}
-        </Card>
-        <AssignmentsViewer />
+        {dbUser?.type === 'instructor' && (
+          <Card sx={{ p: 5, mb: 5 }}>
+            <AssignmentUploader
+              classSelected={classSelected}
+              user={curUser}
+              storage={storage}
+              curUser={curUser}
+            />
+          </Card>
+        )}
+        {dbUser?.type === 'instructor' ? (
+          <InstructorAssignmentsViewer />
+        ) : (
+          <StudentAssignmentsViewer classID={classSelected} />
+        )}
       </Container>
     </Page>
   );

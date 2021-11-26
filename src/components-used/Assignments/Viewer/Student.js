@@ -2,7 +2,8 @@ import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
-import plusFill from '@iconify/icons-eva/plus-fill';
+import downloadOutline from '@iconify/icons-eva/download-outline';
+import cloudUploadOutline from '@iconify/icons-eva/cloud-upload-outline';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
@@ -18,42 +19,57 @@ import {
   Container,
   Typography,
   TableContainer,
-  TablePagination
+  TablePagination,
+  TextField
 } from '@mui/material';
 // components
-import { setDoc, doc, getDoc, getDocs, collection, query } from 'firebase/firestore';
+import {
+  setDoc,
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  query,
+  arrayUnion,
+  Timestamp
+} from 'firebase/firestore';
 import moment from 'moment';
 import downloadFill from '@iconify/icons-eva/edit-fill';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Page from '../../components/Page';
-import Label from '../../components/Label';
-import Scrollbar from '../../components/Scrollbar';
-import SearchNotFound from '../../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../../components/_dashboard/user';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import Input from '@mui/material/Input';
+import { DateTimePicker } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import Page from '../../../components/Page';
+import Label from '../../../components/Label';
+import Scrollbar from '../../../components/Scrollbar';
+import SearchNotFound from '../../../components/SearchNotFound';
+import { UserListHead, UserListToolbar, UserMoreMenu } from '../../../components/_dashboard/user';
 
-import { MyContext } from '../../utils/context';
-import { db } from '../../firebase/initFirebase';
-//
-import docs from '../../_mocks_/user';
-import { descendingComparator, getComparator, applySortFilter } from './viewerFunctions';
+import { MyContext } from '../../../utils/context';
+import { db, storage } from '../../../firebase/initFirebase';
+/// / material
+// components
+import docs from '../../../_mocks_/user';
+import { descendingComparator, getComparator, applySortFilter } from '../viewerFunctions';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'score', label: 'Score', alignRight: false },
+  { id: 'score', label: 'Score', alignRight: false },
   { id: 'total', label: 'Total Score', alignRight: false },
   { id: 'average', label: 'Average Score', alignRight: false },
   { id: 'deadline', label: 'Deadline', alignRight: false },
 
   { id: 'download', label: 'Download Assignment', alignRight: false },
-  { id: 'submissions', label: 'Submissions', alignRight: false },
-  { id: 'number-submissions', label: 'Number of Submissions', alignRight: false },
+  { id: 'submit', label: 'Submit Assignment', alignRight: false },
   { id: '' }
 ];
 
 // ----------------------------------------------------------------------
 
-export default function AssignmentsViewer() {
+export default function StudentAssignmentsViewer({ classID }) {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -136,8 +152,71 @@ export default function AssignmentsViewer() {
   const filteredUsers = applySortFilter(docs, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers?.length === 0;
-  const handleAssignmentDownload = (name, url) => {
-    console.log(name, url);
+
+  const [file, setFile] = React.useState(null);
+  const handleChange = (e) => {
+    setFile(e.target.files[0]);
+    console.log(e.target.files[0]);
+  };
+  const handleSubmit = (e, assignmentName) => {
+    e.preventDefault();
+    if (classSelected) {
+      const storageRef = ref(
+        storage,
+        `/classes/${classSelected}/assignments/${assignmentName}/submissions/${auth?.currentUser?.email}/${file.name}`
+      );
+      console.log(storageRef);
+      // const file = e.target.files[0];
+      if (file) {
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% done`);
+            switch (snapshot.state) {
+              case 'paused':
+                alert('Upload is paused');
+                break;
+              case 'running':
+                // alert('Upload is running');
+                break;
+              default:
+                break;
+            }
+          },
+          (error) => {
+            console.log(error);
+          },
+          () => {
+            alert('done!');
+            const currentDate = new Date();
+            getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+              const docRef = doc(db, 'classes', classSelected);
+              const docData = {
+                assignments: arrayUnion(
+                  ...[
+                    {
+                      submission: arrayUnion(
+                        ...[
+                          {
+                            email: auth?.currentUser?.email,
+                            submissionURL: url,
+                            score: -1,
+                            submissionTime: Timestamp(currentDate)
+                          }
+                        ]
+                      )
+                    }
+                  ]
+                )
+              };
+              setDoc(docRef, docData, { merge: true });
+            });
+          }
+        );
+      }
+    }
   };
   return (
     <Page title="User | Minimal-UI">
@@ -165,7 +244,16 @@ export default function AssignmentsViewer() {
                   {filteredUsers
                     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     ?.map((row) => {
-                      const { name, score, deadline, publishedAt, weightage, url } = row;
+                      const {
+                        name,
+                        score,
+                        deadline,
+                        publishedAt,
+                        weightage,
+                        url,
+                        averageScore,
+                        totalScore
+                      } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
                       const status = deadline > cur ? 'success' : 'banned';
@@ -196,7 +284,8 @@ export default function AssignmentsViewer() {
                             </Stack>
                           </TableCell>
                           <TableCell align="left">{score}</TableCell>
-                          <TableCell align="left">dunno</TableCell>
+                          <TableCell align="left">{totalScore}</TableCell>
+                          <TableCell align="left">{averageScore}</TableCell>
                           {/* <TableCell align="left">{}</TableCell> */}
                           <TableCell align="left">
                             <Label
@@ -206,22 +295,21 @@ export default function AssignmentsViewer() {
                               {deadlineConverted}
                             </Label>
                           </TableCell>
-                          <TableCell align="right">
-                            <Button variant="contained">
-                              {/* <a href={url} target="_blank" rel="noreferrer"> */}
-                              <Icon icon={downloadFill} width={24} height={24} />
-                              {/* </a> */}
-                            </Button>
-                          </TableCell>
                           <TableCell>
-                            <Button variant="contained">
-                              {/* <a href={url} target="_blank" rel="noreferrer"> */}
-                              <Icon icon={downloadFill} width={24} height={24} />
-                              {/* </a> */}
-                            </Button>
+                            <a href={url} target="_blank" rel="noreferrer">
+                              <Button variant="contained">
+                                <Icon icon={downloadOutline} width={24} height={24} />
+                              </Button>
+                            </a>
                           </TableCell>
                           <TableCell align="right">
-                            <UserMoreMenu />
+                            <Input type="file" onChange={handleChange} />
+                            <Button
+                              variant="contained"
+                              onClick={(event) => handleSubmit(event, name)}
+                            >
+                              <Icon icon={cloudUploadOutline} width={24} height={24} />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       );

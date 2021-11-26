@@ -2,7 +2,7 @@
 import React from 'react';
 import { Grid, Button, TextField } from '@mui/material';
 // components
-import { doc, setDoc, arrayUnion, Timestamp } from 'firebase/firestore';
+import { doc, setDoc, arrayUnion, Timestamp, getDoc } from 'firebase/firestore';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import Input from '@mui/material/Input';
 import { DateTimePicker } from '@mui/lab';
@@ -12,15 +12,25 @@ import { db } from '../../firebase/initFirebase';
 
 export const AssignmentUploader = (props) => {
   const today = new Date();
-  const { user, storage, classSelected } = props;
-
+  const { user, storage, classSelected, curUser } = props;
+  const [dbUser, setdbUser] = React.useState();
   const [file, setFile] = React.useState(null);
   const [form, setForm] = React.useState({ name: '', score: '-1', weightage: 0, deadline: today });
   const handleChange = (e) => {
     setFile(e.target.files[0]);
     console.log(e.target.files[0]);
   };
-
+  React.useEffect(() => {
+    if (curUser) {
+      // console.log('abcd');
+      const docRef = doc(db, 'users', curUser?.email);
+      getDoc(docRef).then((docSnap) => {
+        setdbUser(docSnap?.data());
+      });
+    } else {
+      // console.log('dashboard nav err -2');
+    }
+  }, [curUser]);
   const handleUpload = (e) => {
     e.preventDefault();
     if (classSelected) {
