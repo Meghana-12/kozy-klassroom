@@ -11,6 +11,9 @@ import NotFound from './pages/Page404';
 import PrivateRoute from './components/PrivateRoute';
 import Announcements from './pages/Announcements';
 import Students from './pages/Students';
+import { Submissions } from './pages/Submissions';
+import SubmissionsViewer from './components-used/Assignments/Viewer/Submissions';
+import SubmissionsAssignment from './components-used/SubmissionsAssignment';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -33,7 +36,9 @@ export default function Router() {
         // { path: '/', element: <Assignments /> },
         { path: 'assignments', element: <Assignments /> },
         { path: 'students', element: <Students /> },
-        { path: 'announcements', element: <Announcements /> }
+        { path: 'announcements', element: <Announcements /> },
+        { path: 'submissions', element: <Submissions /> },
+        { path: 'submissions/assignment', element: <SubmissionsAssignment /> }
       ]
     },
     { path: '*', element: <Navigate to="/404" replace /> }

@@ -22,9 +22,14 @@ const sidebarConfig = [
     path: '/dashboard/announcements',
     icon: getIcon(peopleFill)
   },
+  // {
+  //   title: 'students',
+  //   path: '/dashboard/students',
+  //   icon: getIcon(shoppingBagFill)
+  // },
   {
-    title: 'students',
-    path: '/dashboard/students',
+    title: 'submissions',
+    path: '/dashboard/submissions',
     icon: getIcon(shoppingBagFill)
   }
   // {
