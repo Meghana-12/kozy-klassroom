@@ -79,28 +79,28 @@ export const AssignmentUploader = (props) => {
                   ...[
                     {
                       name: form?.name,
-                      score: form?.score,
+                      totalScore: form?.score,
                       deadline: Timestamp.fromDate(form.deadline),
                       weightage: form?.weightage,
                       publishedDate: Timestamp.fromDate(new Date()),
                       author: user?.email,
                       class: classSelected,
-                      url
+                      assignmentURL: url
                     }
                   ]
                 ),
                 announcements: arrayUnion(
                   ...[
                     {
+                      type: 'assignment',
                       name: form?.name,
-                      score: form?.score,
+                      totalScore: form?.score,
                       deadline: Timestamp.fromDate(form.deadline),
                       weightage: form?.weightage,
                       publishedDate: Timestamp.fromDate(new Date()),
                       author: user?.email,
                       class: classSelected,
-                      url,
-                      type: 'assignment'
+                      assignmentURL: url
                     }
                   ]
                 )

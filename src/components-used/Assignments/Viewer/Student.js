@@ -166,7 +166,6 @@ export default function StudentAssignmentsViewer({ classID }) {
         `/classes/${classSelected}/assignments/${assignmentName}/submissions/${auth?.currentUser?.email}/${file.name}`
       );
       console.log(storageRef);
-      // const file = e.target.files[0];
       if (file) {
         const uploadTask = uploadBytesResumable(storageRef, file);
         uploadTask.on(
