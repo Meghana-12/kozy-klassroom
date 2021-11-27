@@ -39,26 +39,33 @@ export default function Assignments() {
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
-        <Box sx={{ pb: 5 }}>
-          <Typography variant="h4">
-            Hi, {curUser?.displayName} .
-            {classSelected && <div> Selected Class : {classSelected} </div>}
-          </Typography>
-        </Box>
-        {dbUser?.type === 'instructor' && (
-          <Card sx={{ p: 5, mb: 5 }}>
-            <AssignmentUploader
-              classSelected={classSelected}
-              user={curUser}
-              storage={storage}
-              curUser={curUser}
-            />
-          </Card>
-        )}
-        {dbUser?.type === 'instructor' ? (
-          <InstructorAssignmentsViewer />
+        {classSelected ? (
+          <>
+            <Box sx={{ pb: 5 }}>
+              <Typography variant="h4">
+                Hi, {curUser?.displayName} .
+                {classSelected && <div> Selected Class : {classSelected} </div>}
+              </Typography>
+            </Box>
+            {dbUser?.type === 'instructor' && (
+              <Card sx={{ p: 5, mb: 5 }}>
+                <AssignmentUploader
+                  classSelected={classSelected}
+                  user={curUser}
+                  storage={storage}
+                  curUser={curUser}
+                />
+              </Card>
+            )}
+
+            {dbUser?.type === 'instructor' ? (
+              <InstructorAssignmentsViewer />
+            ) : (
+              <StudentAssignmentsViewer classID={classSelected} />
+            )}
+          </>
         ) : (
-          <StudentAssignmentsViewer classID={classSelected} />
+          'Please Join a class!'
         )}
       </Container>
     </Page>

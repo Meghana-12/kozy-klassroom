@@ -5,26 +5,37 @@ import twitterFill from '@iconify/icons-eva/twitter-fill';
 import facebookFill from '@iconify/icons-eva/facebook-fill';
 import githubFill from '@iconify/icons-eva/github-fill';
 
-import { getAuth, signInWithPopup, GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
+import {
+  getAuth,
+  signInWithPopup,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  onAuthStateChanged
+} from 'firebase/auth';
 import Grid from '@mui/material/Grid';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 // material
 import { Stack, Button, Select, MenuItem } from '@mui/material';
 import { BrowserRouter as Router, Route, Switch, useNavigate } from 'react-router-dom';
-import { db } from '../../firebase/initFirebase';
+import { db, auth } from '../../firebase/initFirebase';
 
 // ----------------------------------------------------------------------
 
 export default function AuthSocial() {
-  const auth = getAuth();
-
+  // const auth = getAuth();
+  const [curUser, setUser] = React.useState();
   const navigate = useNavigate();
   if (auth?.currentUser) {
     navigate('/dashboard/assignments');
   }
   const githubProvider = new GithubAuthProvider();
   const googleProvider = new GoogleAuthProvider();
-  const [curUser, setUser] = React.useState();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUser(user);
+    }
+  });
   const [typeValue, setTypeValue] = React.useState('instructor');
   const handleGithubSignIn = () => {
     if (typeValue == null) {
@@ -39,24 +50,26 @@ export default function AuthSocial() {
           // The signed-in user info.
           const { user } = result;
           setUser(user);
-          try {
-            const docRef = doc(db, 'users', user?.email);
-            setDoc(
-              docRef,
-              {
-                name: user.displayName,
-                email: user.email,
-                uid: user.uid,
-                type: typeValue
-              },
-              { merge: true }
-            );
-            console.log('Document written with ID: ', docRef.id);
-            navigate('/dashboard/assignments');
-          } catch (e) {
-            console.error('Error adding document: ', e);
-          }
-          console.log(user);
+
+          const docRef = doc(db, 'users', user?.email);
+          getDoc(docRef).then((doc) => {
+            if (!doc.data()) {
+              setDoc(
+                docRef,
+                {
+                  name: user.displayName,
+                  email: user.email,
+                  uid: user.uid,
+                  type: typeValue
+                },
+                { merge: true }
+              );
+              console.log('Document written with ID: ', docRef.id);
+              navigate('/dashboard/assignments');
+
+              console.log(user);
+            }
+          });
         })
         .catch((error) => {
           console.log(error);
@@ -77,24 +90,22 @@ export default function AuthSocial() {
           // The signed-in user info.
           const { user } = result;
           setUser(user);
-          try {
-            const docRef = doc(db, 'users', user?.email);
-            setDoc(
-              docRef,
-              {
+
+          const docRef = doc(db, 'users', user?.email);
+          getDoc(docRef).then((doc) => {
+            if (!doc.data()) {
+              setDoc(docRef, {
                 name: user.displayName,
                 email: user.email,
                 uid: user.uid,
                 type: typeValue
-              },
-              { merge: true }
-            );
-            console.log('Document written with ID: ', docRef.id);
-            navigate('/dashboard/assignments');
-          } catch (e) {
-            console.error('Error adding document: ', e);
-          }
-          console.log(user);
+              });
+              console.log('Document written with ID: ', docRef.id);
+              navigate('/dashboard/assignments');
+
+              console.log(user);
+            }
+          });
         })
         .catch((error) => {
           console.log(error);

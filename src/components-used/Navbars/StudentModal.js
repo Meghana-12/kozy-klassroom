@@ -53,12 +53,12 @@ function StudentModal({ curUser }) {
       const docRef = doc(db, 'classes', classID);
       console.log(docRef);
       getDoc(docRef).then((docSnap) => {
-        if (docSnap.data()) {
+        if (docSnap.data() && curUser) {
           setClassExists(true);
           if (docSnap.data().password === password) {
             setPwdCheck(true);
             const classRef = doc(db, 'classes', classID);
-            const userDocRef = doc(db, 'users', curUser.email);
+            const userDocRef = doc(db, 'users', curUser?.email);
             const userDocData = {
               classes: arrayUnion(
                 ...[
@@ -80,6 +80,7 @@ function StudentModal({ curUser }) {
             updateDoc(userDocRef, userDocData);
             updateDoc(classRef, classDocData);
             alert(`Addded you to ${classID}  successfully!`);
+            // classSelectedCallback(classID);
           }
           console.log('here', docSnap.data());
         } else {

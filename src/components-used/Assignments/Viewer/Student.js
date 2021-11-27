@@ -78,7 +78,7 @@ export default function StudentAssignmentsViewer({ classID }) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [curUser, setCurUser] = React.useState();
-  const [docs, setDocs] = React.useState([]);
+  const [docs, setDocs] = React.useState();
 
   const { classSelected } = React.useContext(MyContext);
 
@@ -90,7 +90,7 @@ export default function StudentAssignmentsViewer({ classID }) {
     }
   });
   React.useEffect(() => {
-    if (curUser && classSelected) {
+    if (curUser && classSelected !== null && db) {
       const docRef = collection(db, 'classes', classSelected, 'assignments');
       if (docRef) {
         getDocs(docRef).then((querySnapshot) => {
@@ -98,9 +98,10 @@ export default function StudentAssignmentsViewer({ classID }) {
           const assignments = [];
           querySnapshot.forEach((doc) => {
             console.log('query', doc.data());
-            assignments.push(doc.data());
-            setDocs(assignments);
+            assignments.push(doc?.data());
           });
+          console.log('assignments', assignments);
+          setDocs(assignments);
         });
       }
     }
