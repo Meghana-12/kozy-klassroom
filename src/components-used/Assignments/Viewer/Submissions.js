@@ -1,16 +1,11 @@
-import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
 import downloadOutline from '@iconify/icons-eva/download-outline';
-import cloudUploadOutline from '@iconify/icons-eva/cloud-upload-outline';
-import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
-// material
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
@@ -19,57 +14,31 @@ import {
   Container,
   Typography,
   TableContainer,
-  TablePagination,
-  TextField
+  TablePagination
 } from '@mui/material';
-// components
-import {
-  setDoc,
-  doc,
-  getDoc,
-  getDocs,
-  collection,
-  query,
-  arrayUnion,
-  Timestamp,
-  where
-} from 'firebase/firestore';
-import moment from 'moment';
-import downloadFill from '@iconify/icons-eva/edit-fill';
+import { doc, getDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import Input from '@mui/material/Input';
-import { DateTimePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import PropTypes from 'prop-types';
 import Page from '../../../components/Page';
-import Label from '../../../components/Label';
 import Scrollbar from '../../../components/Scrollbar';
 import SearchNotFound from '../../../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../../../components/_dashboard/user';
-
+import { UserListHead, UserListToolbar } from '../../../components/_dashboard/user';
 import { MyContext } from '../../../utils/context';
-import { db, storage } from '../../../firebase/initFirebase';
-/// / material
-// components
-import docs from '../../../_mocks_/user';
-import { descendingComparator, getComparator, applySortFilter } from '../viewerFunctions';
+import { db } from '../../../firebase/initFirebase';
+import { getComparator, applySortFilter } from '../viewerFunctions';
+
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'student', label: 'Student', alignRight: false },
   { id: 'download', label: 'Download Submission', alignRight: false },
-  { id: 'score', label: 'Score', alignRight: false },
-  // { id: 'total', label: 'Total Score', alignRight: false },
-  //   { id: 'average', label: 'Average Score', alignRight: false },
-  // { id: 'submissionTime', label: 'Submitted at', alignRight: false },
-
-  //   { id: 'submit', label: 'Submit Assignment', alignRight: false },
   { id: '' }
 ];
 
 // ----------------------------------------------------------------------
-
+SubmissionsViewer.propTypes = {
+  assignmentName: PropTypes.string
+};
 export default function SubmissionsViewer({ assignmentName }) {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -80,7 +49,6 @@ export default function SubmissionsViewer({ assignmentName }) {
 
   const [curUser, setCurUser] = React.useState();
   const [docs, setDocs] = React.useState([]);
-  // const [assignmentName, setAssignmentName] = React.useState();
   const { classSelected } = React.useContext(MyContext);
   console.log(assignmentName);
   const auth = getAuth();
@@ -94,7 +62,6 @@ export default function SubmissionsViewer({ assignmentName }) {
   React.useEffect(() => {
     if (curUser && classSelected) {
       const docRef = doc(db, 'classes', classSelected);
-      // query(docRef, where('email', '==', assignmentName));
       console.log(assignmentName);
       if (docRef) {
         getDoc(docRef).then((classDetails) => {
@@ -164,7 +131,6 @@ export default function SubmissionsViewer({ assignmentName }) {
 
   return (
     <Page title="User | Minimal-UI">
-      {/* {assignmentName} */}
       <Container>
         <Card>
           <UserListToolbar
@@ -189,13 +155,8 @@ export default function SubmissionsViewer({ assignmentName }) {
                   {filteredUsers
                     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     ?.map((row) => {
-                      const { email, score, submissionURL } = row;
+                      const { email, submissionURL } = row;
                       const isItemSelected = selected.indexOf(email) !== -1;
-                      // const cur = new Date();
-                      // const status = deadline > cur ? 'success' : 'banned';
-                      // const deadlineConverted = moment(deadline).format('DD-MM-YYYY h:mm:ss');
-                      // console.log(deadlineConverted, cur, status);
-                      // add number of students submitted, average score, highest score, difficulty level based on scores
                       return (
                         <TableRow
                           hover
@@ -213,7 +174,6 @@ export default function SubmissionsViewer({ assignmentName }) {
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              {/* <Avatar alt={email} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>
                                 {email}
                               </Typography>
@@ -225,15 +185,6 @@ export default function SubmissionsViewer({ assignmentName }) {
                                 <Icon icon={downloadOutline} width={24} height={24} />
                               </Button>
                             </a>
-                          </TableCell>
-                          <TableCell align="left">
-                            <TextField value={score} />
-                          </TableCell>
-
-                          <TableCell>
-                            <Button variant="outlined" onClick={() => {}}>
-                              Save
-                            </Button>
                           </TableCell>
                         </TableRow>
                       );
