@@ -82,24 +82,26 @@ export default function AnnouncementCard({ data }) {
           <Typography variant="caption" sx={{ flexShrink: 0, color: 'text.secondary' }}>
             {`Author : ${data?.author} | Published at : ${publishedAtDate}`}
           </Typography>
-          {data?.type !== 'assignment' && (
-            <>
-              {' '}
-              <Button
-                onClick={() => {
-                  setTitle(data.title);
-                  setOpen(true);
-                }}
-              >
-                {' '}
-                Reply{' '}
-              </Button>
-              {data?.replies?.length > 0 && <hr />}
-            </>
-          )}
+
           {data?.replies?.length > 0 && (
             <>
               <CardActions>
+                {data?.type !== 'assignment' && (
+                  <>
+                    {' '}
+                    <Button
+                      onClick={() => {
+                        setTitle(data.title);
+                        setOpen(true);
+                      }}
+                    >
+                      {' '}
+                      Reply{' '}
+                    </Button>
+                    {data?.replies?.length > 0 && <hr />}
+                  </>
+                )}
+                <Box sx={{ flexGrow: 1 }} />
                 <Button type="text" size="small" onClick={handleExpandClick}>
                   View Replies
                   <ExpandMore expand={expanded} aria-expanded={expanded} aria-label="show more">

@@ -13,7 +13,7 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
-import sidebarConfig from './SidebarConfig';
+import { sidebarConfig, sidebarConfigStudent } from './SidebarConfig';
 import { MyContext } from '../../utils/context';
 import { auth, db } from '../../firebase/initFirebase';
 // ----------------------------------------------------------------------
@@ -96,7 +96,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         </Link>
       </Box>
 
-      <NavSection navConfig={sidebarConfig} />
+      {dbUser?.type === 'instructor' ? (
+        <NavSection navConfig={sidebarConfig} />
+      ) : (
+        <NavSection navConfig={sidebarConfigStudent} />
+      )}
 
       <Box sx={{ flexGrow: 1 }} />
 
