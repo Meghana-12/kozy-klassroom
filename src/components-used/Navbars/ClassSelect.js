@@ -32,7 +32,7 @@ export default function ClassSelect() {
   };
 
   return (
-    <Box sx={{ minWidth: 120, ml: 3, mr: 3 }}>
+    <Box sx={{ minWidth: 120, ml: 3, mr: 3, m: 2 }}>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Class ID</InputLabel>
         {classSelected && (

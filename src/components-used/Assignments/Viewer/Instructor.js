@@ -19,7 +19,6 @@ import {
 // components
 import { doc, getDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-
 import downloadOutline from '@iconify/icons-eva/download-outline';
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
