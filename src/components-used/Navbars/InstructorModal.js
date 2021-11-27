@@ -40,8 +40,7 @@ const style = {
   boxShadow: 24,
   p: 4
 };
-function InstructorModal({ curUser }) {
-  const { classSelectedCallback } = React.useContext(MyContext);
+function InstructorModal({ curUser, setOpen }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -66,41 +65,39 @@ function InstructorModal({ curUser }) {
         instructor: curUser.email
       };
       console.log(docData, curUser);
-      try {
-        const docRef = doc(db, 'classes', classID);
-        getDoc(docRef).then((docSnap) => {
-          if (docSnap.data()) {
-            console.log(docSnap.data());
-            alert(`Please give another name, ${classID} exists`, docSnap.data());
-          }
-        });
-        setDoc(docRef, docData, { merge: true });
-        const userDocRef = doc(db, 'users', curUser.email);
-        const userDocData = {
-          classes: arrayUnion(
-            ...[
-              {
-                classID,
-                className
-              }
-            ]
-          )
-        };
-        updateDoc(userDocRef, userDocData);
-        alert(`Class ${classID} is created successfully!`);
-        // classSelectedCallback(classID);
-      } catch (err) {
-        alert(err);
-      }
+
+      const docRef = doc(db, 'classes', classID);
+      getDoc(docRef).then((docSnap) => {
+        if (docSnap.data()) {
+          console.log(docSnap.data());
+          alert(`Please give another name, ${classID} exists`);
+        } else {
+          setDoc(docRef, docData, { merge: true });
+          const userDocRef = doc(db, 'users', curUser.email);
+          const userDocData = {
+            classes: arrayUnion(
+              ...[
+                {
+                  classID,
+                  className
+                }
+              ]
+            )
+          };
+          updateDoc(userDocRef, userDocData);
+          alert(`Class ${classID} is created successfully!`);
+        }
+      });
     }
+    setOpen(false);
   };
   return (
     <>
       <Card sx={style}>
         <Box component="form" onSubmit={(e) => handleSubmit(e)}>
-          <Typography variant="h4" sx={{ mt: 3, textAlign: 'center' }}>
+          <Typography variant="h4" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
             {' '}
-            + Add Class
+            Create New Class
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -110,8 +107,6 @@ function InstructorModal({ curUser }) {
                 id="classID"
                 name="classID"
                 style={{ width: '100%' }}
-                helperText="Please note that this should be a unique ID"
-                // error={!!errorText}
               />
             </Grid>
             <Grid item xs={12}>
@@ -123,9 +118,6 @@ function InstructorModal({ curUser }) {
                 style={{ width: '100%' }}
               />
             </Grid>
-            {/* <Grid item xs={12}>
-                  <TextField required label="Unique ID" id="uniqueID" style={{ width: '100%' }} />
-                </Grid> */}
             <Grid item xs={12}>
               <TextField
                 required

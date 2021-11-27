@@ -76,7 +76,6 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   const [curUser, setCurUser] = React.useState(null);
   const [dbUser, setdbUser] = React.useState();
   const [open, setOpen] = React.useState(false);
-  const [errorText, setErrorText] = React.useState(null);
   const handleClose = () => setOpen(false);
 
   onAuthStateChanged(auth, (user) => {
@@ -110,22 +109,14 @@ export default function DashboardNavbar({ onOpenSidebar }) {
             <Icon icon={menu2Fill} />
           </IconButton>
         </MHidden>
-
-        <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
-
         <ClassSelect id="class-id" />
-        {dbUser?.type === 'instructor' ? (
-          <Button variant="contained" onClick={handleAddClass}>
-            {' '}
-            + Add Class
-          </Button>
-        ) : (
-          <Button variant="contained" onClick={handleAddClass}>
-            {' '}
-            + Join Class
-          </Button>
-        )}
+
+        <Button variant="contained" onClick={handleAddClass} sx={{ minWidth: 120, ml: 3, mr: 5 }}>
+          {' '}
+          {dbUser?.type === 'instructor' ? '+ Create Class' : '+ Join Class'}
+        </Button>
+
         <Modal
           open={open}
           onClose={handleClose}
@@ -133,13 +124,13 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           aria-describedby="modal-modal-description"
         >
           {dbUser?.type === 'instructor' ? (
-            <InstructorModal curUser={curUser} />
+            <InstructorModal curUser={curUser} setOpen={setOpen} />
           ) : (
             <StudentModal curUser={curUser} />
           )}
         </Modal>
+
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          {/* <LanguagePopover /> */}
           <AccountPopover />
         </Stack>
       </ToolbarStyle>
