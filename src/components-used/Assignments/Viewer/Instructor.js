@@ -1,15 +1,11 @@
-import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
-import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // material
 import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
@@ -21,10 +17,10 @@ import {
   TablePagination
 } from '@mui/material';
 // components
-import { setDoc, doc, getDoc, getDocs, collection, query } from 'firebase/firestore';
-import moment from 'moment';
-import downloadFill from '@iconify/icons-eva/edit-fill';
+import { doc, getDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+import downloadOutline from '@iconify/icons-eva/download-outline';
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
 import Scrollbar from '../../../components/Scrollbar';
@@ -34,20 +30,13 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../../../components
 import { MyContext } from '../../../utils/context';
 import { db } from '../../../firebase/initFirebase';
 //
-import docs from '../../../_mocks_/user';
-import { descendingComparator, getComparator, applySortFilter } from '../viewerFunctions';
+import { getComparator, applySortFilter } from '../viewerFunctions';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'score', label: 'Score', alignRight: false },
   { id: 'total', label: 'Total Score', alignRight: false },
-  { id: 'average', label: 'Average Score', alignRight: false },
-  { id: 'deadline', label: 'Deadline', alignRight: false },
-
-  { id: 'download', label: 'Download Assignment', alignRight: false },
-  { id: 'submissions', label: 'Submissions', alignRight: false },
-  { id: 'number-submissions', label: 'Number of Submissions', alignRight: false },
+  { id: 'deadline', label: 'Deadline', alignCenter: true },
   { id: '' }
 ];
 
@@ -136,14 +125,13 @@ export default function InstructorAssignmentsViewer() {
   const filteredUsers = applySortFilter(docs, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers?.length === 0;
-  const handleAssignmentDownload = (name, url) => {
-    console.log(name, url);
-  };
+
   return (
     <Page title="User | Minimal-UI">
       <Container>
         <Card>
           <UserListToolbar
+            placeholder="Search Assignment ... "
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -165,13 +153,11 @@ export default function InstructorAssignmentsViewer() {
                   {filteredUsers
                     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     ?.map((row) => {
-                      const { name, score, deadline, publishedAt, weightage, url } = row;
+                      const { name, totalScore, deadline, publishedAt, downloadURL } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
                       const status = deadline > cur ? 'success' : 'banned';
-                      const deadlineConverted = moment(deadline).format('DD-MM-YYYY h:mm:ss');
-                      console.log(deadlineConverted, cur, status);
-                      // add number of students submitted, average score, highest score, difficulty level based on scores
+                      const deadlineConverted = deadline.toDate();
                       return (
                         <TableRow
                           hover
@@ -189,36 +175,26 @@ export default function InstructorAssignmentsViewer() {
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>
                                 {name}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{score}</TableCell>
-                          <TableCell align="left">dunno</TableCell>
-                          {/* <TableCell align="left">{}</TableCell> */}
+                          <TableCell align="left">{totalScore}</TableCell>
                           <TableCell align="left">
                             <Label
                               variant="ghost"
                               color={(status === 'banned' && 'error') || 'success'}
                             >
-                              {deadlineConverted}
+                              {String(deadlineConverted)}
                             </Label>
                           </TableCell>
                           <TableCell align="right">
-                            <Button variant="contained">
-                              {/* <a href={url} target="_blank" rel="noreferrer"> */}
-                              <Icon icon={downloadFill} width={24} height={24} />
-                              {/* </a> */}
-                            </Button>
-                          </TableCell>
-                          <TableCell>
-                            <Button variant="contained">
-                              {/* <a href={url} target="_blank" rel="noreferrer"> */}
-                              <Icon icon={downloadFill} width={24} height={24} />
-                              {/* </a> */}
-                            </Button>
+                            <a href={downloadURL} target="_blank" rel="noreferrer">
+                              <Button variant="contained">
+                                <Icon icon={downloadOutline} width={24} height={24} />
+                              </Button>
+                            </a>
                           </TableCell>
                           <TableCell align="right">
                             <UserMoreMenu />

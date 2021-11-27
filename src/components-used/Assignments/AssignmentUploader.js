@@ -1,13 +1,12 @@
 // material
 import React from 'react';
-import { Grid, Button, TextField } from '@mui/material';
-// components
-import { doc, setDoc, arrayUnion, Timestamp, getDoc } from 'firebase/firestore';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import Input from '@mui/material/Input';
+import { Grid, Button, TextField, Input } from '@mui/material';
 import { DateTimePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+// components
+import { doc, setDoc, arrayUnion, Timestamp, getDoc } from 'firebase/firestore';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db } from '../../firebase/initFirebase';
 
 export const AssignmentUploader = (props) => {
@@ -15,20 +14,17 @@ export const AssignmentUploader = (props) => {
   const { user, storage, classSelected, curUser } = props;
   const [dbUser, setdbUser] = React.useState();
   const [file, setFile] = React.useState(null);
-  const [form, setForm] = React.useState({ name: '', score: '-1', weightage: 0, deadline: today });
+  const [form, setForm] = React.useState({ name: '', score: '-1', deadline: today });
   const handleChange = (e) => {
     setFile(e.target.files[0]);
     console.log(e.target.files[0]);
   };
   React.useEffect(() => {
     if (curUser) {
-      // console.log('abcd');
       const docRef = doc(db, 'users', curUser?.email);
       getDoc(docRef).then((docSnap) => {
         setdbUser(docSnap?.data());
       });
-    } else {
-      // console.log('dashboard nav err -2');
     }
   }, [curUser]);
   const handleUpload = (e) => {
@@ -36,7 +32,7 @@ export const AssignmentUploader = (props) => {
     if (classSelected) {
       const storageRef = ref(
         storage,
-        `/classes/${classSelected}/assignments/${form.name}-${file.name}`
+        `/classes/${classSelected}/assignments/${form.name}/assignment/${file.name}`
       );
       console.log(storageRef);
       if (file) {
@@ -81,11 +77,10 @@ export const AssignmentUploader = (props) => {
                       name: form?.name,
                       totalScore: form?.score,
                       deadline: Timestamp.fromDate(form.deadline),
-                      weightage: form?.weightage,
                       publishedDate: Timestamp.fromDate(new Date()),
                       author: user?.email,
                       class: classSelected,
-                      assignmentURL: url
+                      downloadURL: url
                     }
                   ]
                 ),
@@ -96,11 +91,10 @@ export const AssignmentUploader = (props) => {
                       name: form?.name,
                       totalScore: form?.score,
                       deadline: Timestamp.fromDate(form.deadline),
-                      weightage: form?.weightage,
                       publishedDate: Timestamp.fromDate(new Date()),
                       author: user?.email,
                       class: classSelected,
-                      assignmentURL: url
+                      downloadURL: url
                     }
                   ]
                 )
@@ -136,16 +130,7 @@ export const AssignmentUploader = (props) => {
             fullWidth
           />
         </Grid>
-        <Grid item>
-          <TextField
-            label="Weightage"
-            name="Weightage"
-            id="weightage"
-            value={form.weightage}
-            onChange={(e) => setForm({ ...form, weightage: e.target.value })}
-            fullWidth
-          />
-        </Grid>
+
         <Grid item>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
