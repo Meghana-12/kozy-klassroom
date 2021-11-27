@@ -248,8 +248,18 @@ export default function StudentAssignmentsViewer({ classID }) {
                       const { name, totalScore, deadline, publishedAt, url } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
-                      const status = deadline > cur ? 'success' : 'banned';
-                      const deadlineConverted = moment(deadline).format('DD-MM-YYYY h:mm:ss');
+                      const status = deadline.toDate() > cur ? 'success' : 'banned';
+                      const deadlineConverted = deadline.toDate();
+                      const docRef = doc(
+                        db,
+                        'classes',
+                        classSelected,
+                        'assignments',
+                        name,
+                        'submissions',
+                        auth?.currentUser?.email
+                      );
+                      const submitted = getDoc(docRef);
                       console.log(deadlineConverted, cur, status);
                       // add number of students submitted, average score, highest score, difficulty level based on scores
                       return (
@@ -283,24 +293,31 @@ export default function StudentAssignmentsViewer({ classID }) {
                               variant="ghost"
                               color={(status === 'banned' && 'error') || 'success'}
                             >
-                              {deadlineConverted}
+                              {status === 'banned' ? `Deadline passed : ` : `Open :`}
+                              {String(deadlineConverted)}
                             </Label>
                           </TableCell>
-                          <TableCell>
+                          <TableCell align="center">
                             <a href={url} target="_blank" rel="noreferrer">
                               <Button variant="contained">
                                 <Icon icon={downloadOutline} width={24} height={24} />
                               </Button>
                             </a>
                           </TableCell>
-                          <TableCell align="right">
-                            <Input type="file" onChange={handleChange} />
-                            <Button
-                              variant="contained"
-                              onClick={(event) => handleSubmit(event, name)}
-                            >
-                              <Icon icon={cloudUploadOutline} width={24} height={24} />
-                            </Button>
+                          <TableCell align="center">
+                            {submitted ? (
+                              'Submitted'
+                            ) : (
+                              <>
+                                <Input type="file" onChange={handleChange} />
+                                <Button
+                                  variant="contained"
+                                  onClick={(event) => handleSubmit(event, name)}
+                                >
+                                  <Icon icon={cloudUploadOutline} width={24} height={24} />
+                                </Button>
+                              </>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
