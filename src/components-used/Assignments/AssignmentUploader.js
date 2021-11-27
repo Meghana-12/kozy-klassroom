@@ -5,7 +5,7 @@ import { DateTimePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 // components
-import { doc, setDoc, arrayUnion, Timestamp, getDoc } from 'firebase/firestore';
+import { doc, setDoc, arrayUnion, Timestamp, getDoc, collection, addDoc } from 'firebase/firestore';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db } from '../../firebase/initFirebase';
 
@@ -69,37 +69,27 @@ export const AssignmentUploader = (props) => {
           () => {
             alert('done!');
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-              const docRef = doc(db, 'classes', classSelected);
-              const docData = {
-                assignments: arrayUnion(
-                  ...[
-                    {
-                      name: form?.name,
-                      totalScore: form?.score,
-                      deadline: Timestamp.fromDate(form.deadline),
-                      publishedDate: Timestamp.fromDate(new Date()),
-                      author: user?.email,
-                      class: classSelected,
-                      downloadURL: url
-                    }
-                  ]
-                ),
-                announcements: arrayUnion(
-                  ...[
-                    {
-                      type: 'assignment',
-                      name: form?.name,
-                      totalScore: form?.score,
-                      deadline: Timestamp.fromDate(form.deadline),
-                      publishedDate: Timestamp.fromDate(new Date()),
-                      author: user?.email,
-                      class: classSelected,
-                      downloadURL: url
-                    }
-                  ]
-                )
+              const assignmentRef = doc(db, 'classes', classSelected, 'assignments', form?.name);
+              const assignmentData = {
+                name: form?.name,
+                deadline: Timestamp.fromDate(form?.deadline),
+                author: curUser?.email,
+                totalScore: form?.score,
+                publishedAt: Timestamp.fromDate(new Date()),
+                url
               };
-              setDoc(docRef, docData, { merge: true });
+              setDoc(assignmentRef, assignmentData, { merge: true });
+              const announcementRef = collection(db, 'classes', classSelected, 'announcements');
+              const annnouncementData = {
+                type: 'assignment',
+                name: form?.name,
+                deadline: Timestamp.fromDate(form?.deadline),
+                author: curUser?.email,
+                totalScore: form?.score,
+                publishedAt: Timestamp.fromDate(new Date()),
+                url
+              };
+              addDoc(announcementRef, annnouncementData);
             });
           }
         );

@@ -61,7 +61,7 @@ export default function SubmissionsViewer({ assignmentName }) {
   });
   React.useEffect(() => {
     if (curUser && classSelected) {
-      const docRef = doc(db, 'classes', classSelected);
+      const docRef = doc(db, 'classes', classSelected, 'assignments');
       console.log(assignmentName);
       if (docRef) {
         getDoc(docRef).then((classDetails) => {

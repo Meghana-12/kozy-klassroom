@@ -17,7 +17,7 @@ import {
   TablePagination
 } from '@mui/material';
 // components
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import downloadOutline from '@iconify/icons-eva/download-outline';
 import Page from '../../../components/Page';
@@ -63,11 +63,16 @@ export default function InstructorAssignmentsViewer() {
   });
   React.useEffect(() => {
     if (curUser && classSelected) {
-      const docRef = doc(db, 'classes', classSelected);
+      const docRef = collection(db, 'classes', classSelected, 'assignments');
       if (docRef) {
-        getDoc(docRef).then((classDetails) => {
-          console.log(classDetails?.data());
-          setDocs(classDetails?.data()?.assignments);
+        getDocs(docRef).then((querySnapshot) => {
+          // console.log('query', querySnapshot?.data());
+          const assignments = [];
+          querySnapshot.forEach((doc) => {
+            console.log('query', doc.data());
+            assignments.push(doc.data());
+            setDocs(assignments);
+          });
         });
       }
     }
@@ -156,7 +161,7 @@ export default function InstructorAssignmentsViewer() {
                       const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
                       const status = deadline > cur ? 'success' : 'banned';
-                      const deadlineConverted = deadline.toDate();
+                      const deadlineConverted = deadline?.toDate();
                       return (
                         <TableRow
                           hover

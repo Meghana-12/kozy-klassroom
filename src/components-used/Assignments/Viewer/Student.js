@@ -191,25 +191,20 @@ export default function StudentAssignmentsViewer({ classID }) {
             alert('done!');
             const currentDate = new Date();
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-              const docRef = doc(db, 'classes', classSelected);
+              const docRef = doc(db, 'classes', classSelected, 'assignments', assignmentName);
               const docData = {
-                assignments: arrayUnion(
+                submissions: arrayUnion(
                   ...[
                     {
-                      submission: arrayUnion(
-                        ...[
-                          {
-                            email: auth?.currentUser?.email,
-                            submissionURL: url,
-                            score: -1,
-                            submissionTime: Timestamp(currentDate)
-                          }
-                        ]
-                      )
+                      email: auth?.currentUser?.email,
+                      submissionURL: url,
+                      score: -1,
+                      submissionTime: Timestamp.fromDate(currentDate)
                     }
                   ]
                 )
               };
+
               setDoc(docRef, docData, { merge: true });
             });
           }
