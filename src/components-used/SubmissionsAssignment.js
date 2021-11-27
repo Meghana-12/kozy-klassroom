@@ -48,7 +48,9 @@ export default function SubmissionsAssignment() {
 
   return (
     <div>
-      <Button variant="outlined">back</Button>
+      <Button type="link" variant="outlined" href="/dashboard/submissions">
+        back
+      </Button>
       <Card sx={{ p: 2, m: 4 }}>
         <CardContent>
           <Typography variant="h4"> Assignment Name: {docs[0]?.name}</Typography>

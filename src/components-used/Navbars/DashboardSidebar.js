@@ -5,13 +5,17 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
 // components
+import * as React from 'react';
+import { getDoc, doc } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
 import sidebarConfig from './SidebarConfig';
-import { auth } from '../../firebase/initFirebase';
+import { MyContext } from '../../utils/context';
+import { auth, db } from '../../firebase/initFirebase';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -40,7 +44,22 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
+  const [curUser, setCurUser] = React.useState();
+  const [dbUser, setdbUser] = React.useState();
+  onAuthStateChanged(auth, (user) => {
+    if (user && auth) {
+      setCurUser(user);
+    }
+  });
   const account = auth?.currentUser;
+  React.useEffect(() => {
+    if (curUser) {
+      const docRef = doc(db, 'users', curUser?.email);
+      getDoc(docRef).then((docSnap) => {
+        setdbUser(docSnap?.data());
+      });
+    }
+  }, [curUser]);
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -70,7 +89,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
                 {account?.displayName}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {/* {account.type} */}
+                {dbUser?.type === 'instructor' ? 'Instructor' : 'Student'}
               </Typography>
             </Box>
           </AccountStyle>
@@ -104,7 +123,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
               Get more?
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              From only $100 per class
+              From only $10 per class
             </Typography>
           </Box>
 
