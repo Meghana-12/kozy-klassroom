@@ -57,9 +57,9 @@ import { descendingComparator, getComparator, applySortFilter } from '../viewerF
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'score', label: 'Score', alignRight: false },
+  // { id: 'score', label: 'Score', alignRight: false },
   { id: 'total', label: 'Total Score', alignRight: false },
-  { id: 'average', label: 'Average Score', alignRight: false },
+  // { id: 'average', label: 'Average Score', alignRight: false },
   { id: 'deadline', label: 'Deadline', alignRight: false },
 
   { id: 'download', label: 'Download Assignment', alignRight: false },
@@ -91,11 +91,16 @@ export default function StudentAssignmentsViewer({ classID }) {
   });
   React.useEffect(() => {
     if (curUser && classSelected) {
-      const docRef = doc(db, 'classes', classSelected);
+      const docRef = collection(db, 'classes', classSelected, 'assignments');
       if (docRef) {
-        getDoc(docRef).then((classDetails) => {
-          console.log(classDetails?.data());
-          setDocs(classDetails?.data()?.assignments);
+        getDocs(docRef).then((querySnapshot) => {
+          // console.log('query', querySnapshot?.data());
+          const assignments = [];
+          querySnapshot.forEach((doc) => {
+            console.log('query', doc.data());
+            assignments.push(doc.data());
+            setDocs(assignments);
+          });
         });
       }
     }
@@ -191,18 +196,20 @@ export default function StudentAssignmentsViewer({ classID }) {
             alert('done!');
             const currentDate = new Date();
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-              const docRef = doc(db, 'classes', classSelected, 'assignments', assignmentName);
+              const docRef = doc(
+                db,
+                'classes',
+                classSelected,
+                'assignments',
+                assignmentName,
+                'submissions',
+                auth?.currentUser?.email
+              );
               const docData = {
-                submissions: arrayUnion(
-                  ...[
-                    {
-                      email: auth?.currentUser?.email,
-                      submissionURL: url,
-                      score: -1,
-                      submissionTime: Timestamp.fromDate(currentDate)
-                    }
-                  ]
-                )
+                email: auth?.currentUser?.email,
+                submissionURL: url,
+                score: -1,
+                submissionTime: Timestamp.fromDate(currentDate)
               };
 
               setDoc(docRef, docData, { merge: true });
@@ -238,16 +245,7 @@ export default function StudentAssignmentsViewer({ classID }) {
                   {filteredUsers
                     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     ?.map((row) => {
-                      const {
-                        name,
-                        score,
-                        deadline,
-                        publishedAt,
-                        weightage,
-                        url,
-                        averageScore,
-                        totalScore
-                      } = row;
+                      const { name, totalScore, deadline, publishedAt, url } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
                       const status = deadline > cur ? 'success' : 'banned';
@@ -277,9 +275,8 @@ export default function StudentAssignmentsViewer({ classID }) {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{score}</TableCell>
+                          {/* <TableCell align="left">{score}</TableCell> */}
                           <TableCell align="left">{totalScore}</TableCell>
-                          <TableCell align="left">{averageScore}</TableCell>
                           {/* <TableCell align="left">{}</TableCell> */}
                           <TableCell align="left">
                             <Label

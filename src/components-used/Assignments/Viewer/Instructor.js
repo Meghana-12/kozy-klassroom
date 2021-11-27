@@ -157,7 +157,7 @@ export default function InstructorAssignmentsViewer() {
                   {filteredUsers
                     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     ?.map((row) => {
-                      const { name, totalScore, deadline, publishedAt, downloadURL } = row;
+                      const { name, totalScore, deadline, publishedAt, url } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
                       const status = deadline > cur ? 'success' : 'banned';
@@ -194,7 +194,7 @@ export default function InstructorAssignmentsViewer() {
                             </Label>
                           </TableCell>
                           <TableCell align="right">
-                            <a href={downloadURL} target="_blank" rel="noreferrer">
+                            <a href={url} target="_blank" rel="noreferrer">
                               <Button variant="contained">
                                 <Icon icon={downloadOutline} width={24} height={24} />
                               </Button>
