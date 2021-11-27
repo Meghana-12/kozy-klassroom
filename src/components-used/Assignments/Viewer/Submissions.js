@@ -16,7 +16,7 @@ import {
   TableContainer,
   TablePagination
 } from '@mui/material';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDocs, collection } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import PropTypes from 'prop-types';
 import Page from '../../../components/Page';
@@ -61,17 +61,22 @@ export default function SubmissionsViewer({ assignmentName }) {
   });
   React.useEffect(() => {
     if (curUser && classSelected) {
-      const docRef = doc(db, 'classes', classSelected, 'assignments');
+      const docRef = collection(
+        db,
+        'classes',
+        classSelected,
+        'assignments',
+        assignmentName,
+        'submissions'
+      );
       console.log(assignmentName);
       if (docRef) {
-        getDoc(docRef).then((classDetails) => {
-          console.log(classDetails?.data());
-          const submissionData = classDetails?.data()?.assignments[0]?.name;
-          console.log(submissionData, submissionData?.submissions, assignmentName);
-          setDocs(
-            classDetails?.data()?.assignments.find((item) => item.name === assignmentName)
-              ?.submissions || []
-          );
+        getDocs(docRef).then((classDetails) => {
+          const submissions = [];
+          classDetails.forEach((doc) => {
+            submissions.push(doc.data());
+          });
+          setDocs(submissions);
         });
       }
     }

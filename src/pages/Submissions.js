@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Container, Typography, Card, Grid } from '@mui/material';
 // components
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection } from 'firebase/firestore';
 import { Route, useNavigate } from 'react-router';
 import moment from 'moment';
 import { useLocation } from 'react-router-dom';
@@ -36,15 +36,19 @@ export const Submissions = () => {
   });
   React.useEffect(() => {
     if (curUser && classSelected) {
-      const docRef = doc(db, 'classes', classSelected);
+      const docRef = collection(db, 'classes', classSelected, 'assignments');
       if (docRef) {
-        getDoc(docRef).then((classDetails) => {
-          console.log(classDetails?.data());
-          setDocs(classDetails?.data()?.assignments);
+        getDocs(docRef).then((classDetails) => {
+          const submissions = [];
+          classDetails.forEach((doc) => {
+            // console.log('submissions', doc?.data());
+            submissions.push(doc.data());
+            setDocs(submissions);
+          });
         });
       }
     }
-  }, [curUser, classSelected, navigate]);
+  }, [curUser, classSelected, navigate, docs]);
   return (
     <div>
       <Grid container spacing={3}>
