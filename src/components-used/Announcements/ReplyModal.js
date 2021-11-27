@@ -31,23 +31,15 @@ function AnnouncementModal({ setOpen, title }) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const reply = data.get('reply');
-    const docRef = doc(db, 'classes', classSelected);
+    const docRef = doc(db, 'classes', classSelected, 'announcements', title);
     const docData = {
-      announcements: arrayUnion(
+      replies: arrayUnion(
         ...[
           {
-            type: 'conversation',
-            title,
-            replies: arrayUnion(
-              ...[
-                {
-                  reply,
-                  author: curUser?.email,
-                  photoURL: curUser?.photoURL,
-                  postedAt: Timestamp.fromDate(new Date())
-                }
-              ]
-            )
+            reply,
+            author: curUser?.email,
+            photoURL: curUser?.photoURL,
+            postedAt: Timestamp.fromDate(new Date())
           }
         ]
       )

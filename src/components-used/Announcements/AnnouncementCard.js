@@ -52,9 +52,9 @@ export default function AnnouncementCard({ data }) {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Typography variant="caption" sx={{ flexShrink: 0, color: 'text.secondary' }}>
-            {`Author : ${data.author} | Published at : ${publishedAtDate}`}
+            {`Author : ${data?.author} | Published at : ${publishedAtDate}`}
           </Typography>
-          {/* {data.type !== 'assignment' && (
+          {data?.type !== 'assignment' && (
             <>
               {' '}
               <Button
@@ -66,21 +66,23 @@ export default function AnnouncementCard({ data }) {
                 {' '}
                 Reply{' '}
               </Button>
-              {data.replies.length > 0 && <hr />}
-            </> */}
-          {/* )} */}
-          {/* {data.type !== 'assignment' &&
-            data.replies.map((item) => <div key={JSON.stringify(item.postedAt)}>{item.reply}</div>)} */}
+              {data?.replies?.length > 0 && <hr />}
+            </>
+          )}
+          {data?.type !== 'assignment' &&
+            data?.replies?.map((item) => (
+              <div key={JSON.stringify(item.postedAt)}>{item.reply}</div>
+            ))}
         </CardContent>
       </Card>
-      {/* <Modal
+      <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <ReplyModal title={title} setOpen={setOpen} />
-      </Modal> */}
+      </Modal>
     </>
   );
 }

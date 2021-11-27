@@ -49,10 +49,14 @@ export default function Announcements() {
   });
   React.useEffect(() => {
     if (classSelected) {
-      const docRef = doc(db, 'classes', classSelected);
-      getDoc(docRef).then((classDetails) => {
-        console.log(classDetails?.data());
-        setDocs(classDetails?.data()?.announcements);
+      const docRef = collection(db, 'classes', classSelected, 'announcements');
+      getDocs(docRef).then((classDetails) => {
+        const announcements = [];
+        classDetails.forEach((doc) => {
+          console.log(doc?.data());
+          announcements.push(doc?.data());
+        });
+        setDocs(announcements);
       });
     }
   }, [classSelected]);
