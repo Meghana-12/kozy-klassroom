@@ -4,32 +4,15 @@ import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import {
-  Box,
-  Stack,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Button,
-  Card,
-  TextField,
-  Grid
-} from '@mui/material';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import { Box, Stack, AppBar, Toolbar, IconButton, Button, Modal } from '@mui/material';
 // components
-import { getDoc, doc, arrayUnion } from 'firebase/firestore';
+import { getDoc, doc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import { setDoc, Timestamp, updateDoc } from '@firebase/firestore';
 import ClassSelect from './ClassSelect';
 import { MHidden } from '../../components/@material-extend';
 //
-import Searchbar from '../../layouts/dashboard/Searchbar';
 import AccountPopover from './AccountPopover';
-import LanguagePopover from '../../layouts/dashboard/LanguagePopover';
-import NotificationsPopover from '../../layouts/dashboard/NotificationsPopover';
 import { db, auth } from '../../firebase/initFirebase';
-import { MyContext } from '../../utils/context';
 import InstructorModal from './InstructorModal';
 import StudentModal from './StudentModal';
 // ----------------------------------------------------------------------
@@ -56,16 +39,6 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   }
 }));
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  boxShadow: 24,
-  p: 4
-};
-
 // ----------------------------------------------------------------------
 
 DashboardNavbar.propTypes = {
@@ -81,20 +54,14 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setCurUser(user);
-      // console.log('nav', user);
-    } else {
-      // console.log('dashboard nav err');
     }
   });
   React.useEffect(() => {
     if (curUser) {
-      // console.log('abcd');
       const docRef = doc(db, 'users', curUser?.email);
       getDoc(docRef).then((docSnap) => {
         setdbUser(docSnap?.data());
       });
-    } else {
-      // console.log('dashboard nav err -2');
     }
   }, [curUser]);
   const handleAddClass = () => {
