@@ -141,12 +141,6 @@ export const AssignmentUploader = (props) => {
         </Grid>
         <Grid item>
           <Input required type="file" onChange={handleChange} />
-          {/* <label htmlFor="contained-button-file">
-            <Input accept="image/*" id="contained-button-file" multiple type="file" />
-            <Button variant="contained" component="span">
-              Upload
-            </Button>
-          </label> */}
         </Grid>
         <Grid item>
           <Button variant="contained" fullWidth disabled={!file} type="submit">
