@@ -1,31 +1,17 @@
 import React from 'react';
 
-import { Box, Container, Typography, Card, Grid } from '@mui/material';
+import { Grid, Typography, Button } from '@mui/material';
 // components
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, getDocs, collection } from 'firebase/firestore';
-import { Route, useNavigate } from 'react-router';
-import moment from 'moment';
-import { useLocation } from 'react-router-dom';
-import SubmissionsAssignment from '../components-used/SubmissionsAssignment';
+import { getDocs, collection } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 import AssignmentCard from '../components-used/Assignments/AssignmentCard';
-import SubmissionsViewer from '../components-used/Assignments/Viewer/Submissions';
-import InstructorAssignmentsViewer from '../components-used/Assignments/Viewer/Instructor';
-import StudentAssignmentsViewer from '../components-used/Assignments/Viewer/Student';
 import { MyContext } from '../utils/context';
-import Page from '../components/Page';
-import { auth, storage, db } from '../firebase/initFirebase';
-import { AssignmentUploader } from '../components-used/Assignments/AssignmentUploader';
+import { auth, db } from '../firebase/initFirebase';
 
-function useQuery() {
-  const { search } = useLocation();
-
-  return React.useMemo(() => new URLSearchParams(search), [search]);
-}
 export const Submissions = () => {
   const [curUser, setCurUser] = React.useState();
   const [docs, setDocs] = React.useState([]);
-  const queryName = useQuery();
   const { classSelected } = React.useContext(MyContext);
 
   const navigate = useNavigate();
@@ -41,7 +27,6 @@ export const Submissions = () => {
         getDocs(docRef).then((classDetails) => {
           const submissions = [];
           classDetails.forEach((doc) => {
-            // console.log('submissions', doc?.data());
             submissions.push(doc.data());
             setDocs(submissions);
           });
@@ -52,25 +37,32 @@ export const Submissions = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        {docs?.length > 0
-          ? docs?.map((item) => (
-              // <Route>
-
-              <Grid item xs={4} key={item.name}>
-                <AssignmentCard
-                  name={item.name}
-                  deadline={moment(item.deadline).format('DD-MM-YYYY h:mm:ss')}
-                  // numberOfSubmissions,
-                  // averageScore={item.averageScore}
-                  totalScore={item.totalScore}
-                  weightage={item.weightage}
-                />
-              </Grid>
-            ))
-          : 'There are no active assignments'}
+        {docs?.length > 0 ? (
+          docs?.map((item) => (
+            <Grid item xs={4} key={item.name}>
+              <AssignmentCard
+                name={item.name}
+                deadline={String(item.deadline.toDate())}
+                totalScore={item.totalScore}
+                weightage={item.weightage}
+              />
+            </Grid>
+          ))
+        ) : (
+          <Typography variant="subtitle" component="div" sx={{ m: 'auto', mt: 10 }}>
+            There are no active assignments.
+            <br /> Please
+            <Button href="/dashboard/assignments" size="large">
+              Create assignments
+            </Button>
+            in the class
+            <Typography variant="h5" color="text.primary">
+              {classSelected}
+            </Typography>
+            to view the student submissions here!
+          </Typography>
+        )}
       </Grid>
-      {/* <SubmissionsAssignment name={queryName.get('name')} /> */}
-      {/* <div>{queryName.get('name')}</div> */}
     </div>
   );
 };

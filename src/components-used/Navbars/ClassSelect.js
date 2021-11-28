@@ -11,14 +11,9 @@ import { auth, db } from '../../firebase/initFirebase';
 
 export default function ClassSelect() {
   const { classSelected, classSelectedCallback, options } = React.useContext(MyContext);
-  // const [selectOptions, setSelectOptions] = React.useState(options);
   const handleChange = (event) => {
     classSelectedCallback(event.target.value);
   };
-  // React.useEffect(() => {
-  //   console.log(options);
-  //   setSelectOptions(options);
-  // }, [options]);
   return (
     <Box sx={{ minWidth: 120, ml: 3, mr: 3, m: 2 }}>
       {!!options?.length && (

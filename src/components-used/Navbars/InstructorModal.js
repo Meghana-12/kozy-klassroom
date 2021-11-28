@@ -53,14 +53,6 @@ function InstructorModal({ curUser, setOpen, setOptions }) {
         className,
         password,
         createdOn: Timestamp.fromDate(new Date()),
-        assignments: [],
-        annnouncements: [
-          {
-            type: 'auto',
-            message: 'Welcome to Announcements!',
-            replies: ['You can reply to messages here']
-          }
-        ],
         students: [],
         instructor: curUser.email
       };

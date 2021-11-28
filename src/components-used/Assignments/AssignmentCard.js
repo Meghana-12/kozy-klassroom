@@ -9,14 +9,7 @@ import { Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { MyContext } from '../../utils/context';
 
-export default function AssignmentCard({
-  name,
-  deadline,
-  numberOfSubmissions,
-  averageScore,
-  totalScore,
-  weightage
-}) {
+export default function AssignmentCard({ name, deadline, totalScore, weightage }) {
   const { classSelected } = React.useContext(MyContext);
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -30,8 +23,6 @@ export default function AssignmentCard({
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           Total Score :{totalScore} | Weightage : {weightage}
         </Typography>
-        <Typography variant="body2">Average Score : {averageScore}</Typography>
-        {/* <Typography variant="body2">Number Of Submissions : {numberOfSubmissions}</Typography> */}
       </CardContent>
       <CardActions>
         <Link to={`assignment?classid=${classSelected}&name=${name}`}>
