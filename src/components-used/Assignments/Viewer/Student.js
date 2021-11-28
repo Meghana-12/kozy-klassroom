@@ -209,7 +209,7 @@ export default function StudentAssignmentsViewer() {
                       const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
                       const status = deadline.toDate() > cur ? 'success' : 'banned';
-                      const deadlineConverted = deadline.toDate();
+                      const deadlineConverted = deadline.toDate().toLocaleString();
                       let submitted = false;
                       if (name && db && classSelected && auth?.currentUser) {
                         const docRef = doc(
@@ -254,8 +254,8 @@ export default function StudentAssignmentsViewer() {
                               variant="ghost"
                               color={(status === 'banned' && 'error') || 'success'}
                             >
-                              {status === 'banned' ? `Deadline passed : ` : `Open :`}
-                              {String(deadlineConverted)}
+                              {status === 'banned' ? `Deadline passed : ` : `Open till :`}
+                              {`${deadlineConverted}`}
                             </Label>
                           </TableCell>
                           <TableCell align="center">

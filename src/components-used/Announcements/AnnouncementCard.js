@@ -48,7 +48,7 @@ AnnouncementCard.propTypes = {
 export default function AnnouncementCard({ data }) {
   const deadlineDate = data.deadline?.toDate();
   const [open, setOpen] = React.useState(false);
-  const publishedAtDate = data.publishedDate?.toDate();
+  const publishedAtDate = data.publishedDate?.toDate().toLocaleString();
   const [title, setTitle] = React.useState(data?.title);
   const handleClose = () => setOpen(false);
   const [expanded, setExpanded] = React.useState(false);
@@ -115,7 +115,7 @@ export default function AnnouncementCard({ data }) {
               <CardContent>
                 {data?.type !== 'assignment' &&
                   data?.replies?.map((item) => {
-                    const replyPublishedAt = item?.postedAt?.toDate();
+                    const replyPublishedAt = item?.postedAt?.toDate().toLocaleString();
                     return (
                       <div key={String(item?.publishedDate)}>
                         <Typography variant="body2" sx={{ color: 'text.secondary', pt: 1, pl: 1 }}>

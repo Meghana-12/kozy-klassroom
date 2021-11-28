@@ -130,8 +130,8 @@ export default function InstructorAssignmentsViewer() {
                     ?.map((row) => {
                       const { name, totalScore, deadline, publishedAt, url } = row;
                       const cur = new Date();
-                      const status = deadline > cur ? 'success' : 'banned';
-                      const deadlineConverted = deadline?.toDate();
+                      const status = deadline.toDate() > cur ? 'success' : 'banned';
+                      const deadlineConverted = deadline?.toDate().toLocaleString();
                       return (
                         <TableRow hover key={JSON.stringify(publishedAt)} tabIndex={-1}>
                           <TableCell align="left">
@@ -147,7 +147,8 @@ export default function InstructorAssignmentsViewer() {
                               variant="ghost"
                               color={(status === 'banned' && 'error') || 'success'}
                             >
-                              {String(deadlineConverted)}
+                              {status === 'banned' ? `Deadline passed : ` : `Open till :`}
+                              {`${deadlineConverted}`}
                             </Label>
                           </TableCell>
                           <TableCell align="right">

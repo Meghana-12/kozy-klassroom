@@ -42,7 +42,7 @@ export const Submissions = () => {
             <Grid item xs={4} key={item.name}>
               <AssignmentCard
                 name={item.name}
-                deadline={String(item.deadline.toDate())}
+                deadline={item?.deadline}
                 totalScore={item.totalScore}
                 weightage={item.weightage}
               />

@@ -43,8 +43,7 @@ export default function SubmissionsAssignment() {
     }
   }, [curUser, classSelected, navigate, queryName]);
   classSelectedCallback(queryName.get('classid'));
-  //   const { name, deadline, totalScore, weightage }
-  const formatedDeadline = docs[0]?.deadline?.toDate();
+  const formatedDeadline = docs[0]?.deadline;
 
   return (
     <div>
@@ -55,15 +54,11 @@ export default function SubmissionsAssignment() {
         <CardContent>
           <Typography variant="h4"> Assignment Name: {docs[0]?.name}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            Deadline: {String(formatedDeadline)}{' '}
+            Deadline: {String(formatedDeadline.toLocaleString())}{' '}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             Total Score: {docs[0]?.totalScore}
           </Typography>
-          {/* <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            Weightage : {docs[0]?.weightage}{' '}
-          </Typography> */}
-          {/* {queryName.get('name')} */}
         </CardContent>
       </Card>
       <SubmissionsViewer

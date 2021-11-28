@@ -8,28 +8,35 @@ import Typography from '@mui/material/Typography';
 import { Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { MyContext } from '../../utils/context';
+import Label from '../../components/Label';
 
-export default function AssignmentCard({ name, deadline, totalScore, weightage }) {
+export default function AssignmentCard({ name, deadline, totalScore }) {
   const { classSelected } = React.useContext(MyContext);
+  const cur = new Date();
+  const status = deadline.toDate() > cur ? 'success' : 'banned';
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {deadline}
+          <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
+            {status === 'banned' ? `Deadline passed : ` : `Open till :`}
+            {deadline.toDate().toLocaleString()}
+          </Label>
         </Typography>
         <Typography variant="h5" component="div">
           {name}
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          Total Score :{totalScore} | Weightage : {weightage}
-        </Typography>
+        <Typography color="text.secondary">Total Score :{totalScore}</Typography>
       </CardContent>
       <CardActions>
-        <Link to={`assignment?classid=${classSelected}&name=${name}`}>
-          <Button size="small" onClick={() => {}} fullWidth>
-            Learn More
-          </Button>
-        </Link>
+        <Box sx={{ flexGrow: 1 }} />
+        <Button
+          size="small"
+          href={`assignment?classid=${classSelected}&name=${name}`}
+          sx={{ mr: 2, mb: 1 }}
+        >
+          Learn More
+        </Button>
       </CardActions>
     </Card>
   );
