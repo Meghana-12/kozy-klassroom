@@ -38,16 +38,16 @@ export default function Assignments() {
   }, [curUser]);
 
   return (
-    <Page title="Dashboard | Minimal-UI">
+    <Page title="Assignments | Kozy Klassroom">
+      <Box sx={{ pb: 5 }}>
+        <Typography variant="h3" noWrap>
+          {' '}
+          Assignments
+        </Typography>
+      </Box>
       <Container maxWidth="xl">
         {classSelected ? (
           <>
-            <Box sx={{ pb: 5 }}>
-              <Typography variant="h4">
-                Hi, {curUser?.displayName} .
-                {classSelected && <div> Selected Class : {classSelected} </div>}
-              </Typography>
-            </Box>
             {dbUser?.type === 'instructor' && (
               <Card sx={{ p: 5, mb: 5 }}>
                 <AssignmentUploader

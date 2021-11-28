@@ -1,6 +1,6 @@
 // material
 import React from 'react';
-import { Grid, Button, TextField, Input } from '@mui/material';
+import { Grid, Button, TextField, Input, Typography } from '@mui/material';
 import { DateTimePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -105,6 +105,10 @@ export const AssignmentUploader = (props) => {
 
   return (
     <form onSubmit={handleUpload}>
+      {/* <Typography variant="h4" noWrap>
+        {' '}
+        Upload an Assignment!
+      </Typography> */}
       <Grid container spacing={3}>
         <Grid item>
           <TextField

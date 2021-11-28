@@ -30,7 +30,7 @@ import { mockImgCover } from '../utils/mockImages';
 //
 import Scrollbar from '../components/Scrollbar';
 import AnnouncementCard from '../components-used/Announcements/AnnouncementCard';
-
+import Page from '../components/Page';
 // ----------------------------------------------------------------------
 
 export default function Announcements() {
@@ -72,38 +72,40 @@ export default function Announcements() {
   }, [classSelected]);
 
   return (
-    <Grid container sx={{ p: 2 }} flexDirection="row">
-      <>
-        <Typography variant="h3" noWrap>
-          {' '}
-          Announcements
-        </Typography>
-        <Box sx={{ flexGrow: 1 }} />
-        <Button onClick={handleAddPost}> + New Post</Button>
-        <Grid item xs={12}>
-          {docs?.length > 0 ? (
-            <>
-              {docs?.map((data) => (
-                <AnnouncementCard key={data.deadline} data={data} />
-              ))}
-            </>
-          ) : (
-            <Typography variant="subtitle" component="div" sx={{ m: 'auto', mt: 10 }}>
-              {dbUser?.type === 'instructor'
-                ? 'There are no Announcements!\nPlease create a new assigment or post!'
-                : 'There are no Announcements!\nPlease come back later, the new announcements will be shown here!\n Feel free to create a new post!'}
-            </Typography>
-          )}
-        </Grid>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <AnnouncementModal curUser={curUser} setOpen={setOpen} />
-        </Modal>
-      </>
-    </Grid>
+    <Page title="Announcements | Kozy Klassroom">
+      <Grid container sx={{ p: 2 }} flexDirection="row">
+        <>
+          <Typography variant="h3" noWrap>
+            {' '}
+            Announcements
+          </Typography>
+          <Box sx={{ flexGrow: 1 }} />
+          <Button onClick={handleAddPost}> + New Post</Button>
+          <Grid item xs={12}>
+            {docs?.length > 0 ? (
+              <>
+                {docs?.map((data) => (
+                  <AnnouncementCard key={data.deadline} data={data} />
+                ))}
+              </>
+            ) : (
+              <Typography variant="subtitle" component="div" sx={{ m: 'auto', mt: 10 }}>
+                {dbUser?.type === 'instructor'
+                  ? 'There are no Announcements!\nPlease create a new assigment or post!'
+                  : 'There are no Announcements!\nPlease come back later, the new announcements will be shown here!\n Feel free to create a new post!'}
+              </Typography>
+            )}
+          </Grid>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <AnnouncementModal curUser={curUser} setOpen={setOpen} />
+          </Modal>
+        </>
+      </Grid>
+    </Page>
   );
 }

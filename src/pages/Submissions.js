@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import AssignmentCard from '../components-used/Assignments/AssignmentCard';
 import { MyContext } from '../utils/context';
 import { auth, db } from '../firebase/initFirebase';
+import Page from '../components/Page';
 
 export const Submissions = () => {
   const [curUser, setCurUser] = React.useState();
@@ -35,7 +36,11 @@ export const Submissions = () => {
     }
   }, [curUser, classSelected, navigate, docs]);
   return (
-    <div>
+    <Page title="Submissions| Kozy Klassroom">
+      <Typography variant="h3" noWrap>
+        {' '}
+        Submissions
+      </Typography>
       <Grid container spacing={3}>
         {docs?.length > 0 ? (
           docs?.map((item) => (
@@ -63,6 +68,6 @@ export const Submissions = () => {
           </Typography>
         )}
       </Grid>
-    </div>
+    </Page>
   );
 };
