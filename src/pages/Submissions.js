@@ -28,8 +28,8 @@ export const Submissions = () => {
           const submissions = [];
           classDetails.forEach((doc) => {
             submissions.push(doc.data());
-            setDocs(submissions);
           });
+          setDocs(submissions);
         });
       }
     }
