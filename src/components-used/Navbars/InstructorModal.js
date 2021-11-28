@@ -40,7 +40,7 @@ const style = {
   boxShadow: 24,
   p: 4
 };
-function InstructorModal({ curUser, setOpen }) {
+function InstructorModal({ curUser, setOpen, setOptions }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -86,6 +86,7 @@ function InstructorModal({ curUser, setOpen }) {
           };
           updateDoc(userDocRef, userDocData);
           alert(`Class ${classID} is created successfully!`);
+          setOptions([classID]);
         }
       });
     }

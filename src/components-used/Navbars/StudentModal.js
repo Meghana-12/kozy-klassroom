@@ -3,31 +3,12 @@ import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 // material
-import { alpha, styled } from '@mui/material/styles';
-import {
-  Box,
-  Stack,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Button,
-  Card,
-  TextField,
-  Grid
-} from '@mui/material';
+
+import { Box, Button, Card, TextField, Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
 // components
 import { getDoc, doc, arrayUnion } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
-import { setDoc, Timestamp, updateDoc } from '@firebase/firestore';
-import ClassSelect from './ClassSelect';
-import { MHidden } from '../../components/@material-extend';
-//
-import Searchbar from '../../layouts/dashboard/Searchbar';
-import AccountPopover from './AccountPopover';
-import LanguagePopover from '../../layouts/dashboard/LanguagePopover';
-import NotificationsPopover from '../../layouts/dashboard/NotificationsPopover';
+import { updateDoc } from '@firebase/firestore';
 import { db, auth } from '../../firebase/initFirebase';
 import { MyContext } from '../../utils/context';
 
@@ -40,8 +21,8 @@ const style = {
   boxShadow: 24,
   p: 4
 };
-function StudentModal({ curUser }) {
-  const { classSelectedCallback } = React.useContext(MyContext);
+function StudentModal({ curUser, setOptions, setOpen }) {
+  const { classSelectedCallback, classSelected } = React.useContext(MyContext);
   const [classExists, setClassExists] = React.useState(false);
   const [pwdCheck, setPwdCheck] = React.useState(false);
   const handleSubmit = (event) => {
@@ -78,14 +59,15 @@ function StudentModal({ curUser }) {
               )
             };
             updateDoc(userDocRef, userDocData);
-            updateDoc(classRef, classDocData);
-            alert(`Addded you to ${classID}  successfully!`);
-            // classSelectedCallback(classID);
+            updateDoc(classRef, classDocData).then((res) => {
+              alert(`Addded you to ${classID}  successfully!`);
+              setOptions([classID]);
+            });
           }
-          console.log('here', docSnap.data());
         } else {
-          console.log("Class doesn't Exist!");
+          alert(`Class ${classID} doesn't Exist!`);
         }
+        setOpen(false);
       });
     } catch (err) {
       console.log(err);

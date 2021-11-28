@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 // routes
 import Router from './routes';
 // theme
@@ -13,13 +14,19 @@ import { auth } from './firebase/initFirebase';
 
 export default function App() {
   const [classSelected, setClassSelected] = React.useState();
+  const [options, setOptions] = React.useState([]);
   const classSelectedCallback = React.useCallback((classID) => {
     setClassSelected(classID);
   }, []);
-  const [user, setUser] = React.useState();
-  const [dbUser, setdbUser] = React.useState();
+  const callbackSetOptions = React.useCallback((newOptions) => {
+    console.log('before', newOptions);
+    setOptions((prevOptions) => [...new Set([...newOptions, ...prevOptions])]);
+  }, []);
+  console.log('after', options);
   return (
-    <MyContext.Provider value={{ classSelected, classSelectedCallback, user, setUser }}>
+    <MyContext.Provider
+      value={{ classSelected, classSelectedCallback, options, callbackSetOptions }}
+    >
       <ThemeConfig>
         <ScrollToTop />
         <GlobalStyles />

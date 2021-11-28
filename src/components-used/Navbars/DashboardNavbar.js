@@ -11,6 +11,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import ClassSelect from './ClassSelect';
 import { MHidden } from '../../components/@material-extend';
 //
+
+import { MyContext } from '../../utils/context';
 import AccountPopover from './AccountPopover';
 import { db, auth } from '../../firebase/initFirebase';
 import InstructorModal from './InstructorModal';
@@ -49,10 +51,13 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   const [curUser, setCurUser] = React.useState(null);
   const [dbUser, setdbUser] = React.useState();
   const [open, setOpen] = React.useState(false);
+
   const handleClose = () => setOpen(false);
+  const { classSelected, classSelectedCallback, options, callbackSetOptions } =
+    React.useContext(MyContext);
 
   onAuthStateChanged(auth, (user) => {
-    if (user) {
+    if (user && auth) {
       setCurUser(user);
     }
   });
@@ -68,6 +73,18 @@ export default function DashboardNavbar({ onOpenSidebar }) {
     setOpen(true);
   };
 
+  React.useEffect(() => {
+    if (curUser && auth) {
+      const docRef = doc(db, 'users', curUser.email);
+      getDoc(docRef).then((docSnap) => {
+        if (docSnap?.data()?.classes) {
+          const array = [...docSnap.data().classes.map((classDetails) => classDetails.classID)];
+          callbackSetOptions(array);
+          classSelectedCallback(docSnap.data().classes[0].classID);
+        }
+      });
+    }
+  }, [curUser, classSelectedCallback, dbUser, callbackSetOptions]);
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -91,9 +108,9 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           aria-describedby="modal-modal-description"
         >
           {dbUser?.type === 'instructor' ? (
-            <InstructorModal curUser={curUser} setOpen={setOpen} />
+            <InstructorModal curUser={curUser} setOpen={setOpen} setOptions={callbackSetOptions} />
           ) : (
-            <StudentModal curUser={curUser} />
+            <StudentModal curUser={curUser} setOpen={setOpen} setOptions={callbackSetOptions} />
           )}
         </Modal>
 

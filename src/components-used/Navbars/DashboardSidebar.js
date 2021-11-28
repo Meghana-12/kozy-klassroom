@@ -121,7 +121,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             src="/static/illustrations/illustration_avatar.png"
             sx={{ width: 100, position: 'absolute', top: -50 }}
           />
-
           <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">
               Get more?
@@ -130,10 +129,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
               From only $10 per class
             </Typography>
           </Box>
-
-          <Button fullWidth href="#" target="_blank" variant="contained">
-            Upgrade to Pro
-          </Button>
+          {/* <Button fullWidth variant="contained"> */}
+          Upgrade to Pro
+          {/* </Button> */}
         </Stack>
       </Box>
     </Scrollbar>
