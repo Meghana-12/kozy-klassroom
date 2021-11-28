@@ -69,34 +69,42 @@ export const AssignmentUploader = (props) => {
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
               const assignmentRef = doc(db, 'classes', classSelected, 'assignments', form?.name);
-              const assignmentData = {
-                name: form?.name,
-                deadline: Timestamp.fromDate(form?.deadline),
-                author: curUser?.email,
-                totalScore: form?.score,
-                publishedAt: Timestamp.fromDate(new Date()),
-                url
-              };
-              setDoc(assignmentRef, assignmentData);
-              const announcementRef = doc(
-                db,
-                'classes',
-                classSelected,
-                'announcements',
-                form?.name
-              );
-              const annnouncementData = {
-                type: 'assignment',
-                name: form?.name,
-                deadline: Timestamp.fromDate(form?.deadline),
-                author: curUser?.email,
-                totalScore: form?.score,
-                publishedAt: Timestamp.fromDate(new Date()),
-                url
-              };
-              setDoc(announcementRef, annnouncementData);
-              setChangeCallback((prev) => !prev);
-              alert('done!');
+              getDoc(assignmentRef).then((docSnap) => {
+                if (docSnap?.data()) {
+                  alert(
+                    `Assignment with name "${form?.name}" already exists! Please give another name.`
+                  );
+                } else {
+                  const assignmentData = {
+                    name: form?.name,
+                    deadline: Timestamp.fromDate(form?.deadline),
+                    author: curUser?.email,
+                    totalScore: form?.score,
+                    publishedAt: Timestamp.fromDate(new Date()),
+                    url
+                  };
+                  setDoc(assignmentRef, assignmentData);
+                  const announcementRef = doc(
+                    db,
+                    'classes',
+                    classSelected,
+                    'announcements',
+                    form?.name
+                  );
+                  const annnouncementData = {
+                    type: 'assignment',
+                    name: form?.name,
+                    deadline: Timestamp.fromDate(form?.deadline),
+                    author: curUser?.email,
+                    totalScore: form?.score,
+                    publishedAt: Timestamp.fromDate(new Date()),
+                    url
+                  };
+                  setDoc(announcementRef, annnouncementData);
+                  setChangeCallback((prev) => !prev);
+                  alert('done!');
+                }
+              });
             });
           }
         );
