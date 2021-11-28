@@ -34,7 +34,8 @@ const style = {
   p: 4
 };
 function AnnouncementModal({ curUser, setOpen }) {
-  const { classSelected } = React.useContext(MyContext);
+  // const { classSelected } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);

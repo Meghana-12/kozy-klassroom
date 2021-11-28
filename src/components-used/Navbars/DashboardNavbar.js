@@ -53,9 +53,8 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   const [open, setOpen] = React.useState(false);
 
   const handleClose = () => setOpen(false);
-  const { classSelected, classSelectedCallback, options, callbackSetOptions } =
-    React.useContext(MyContext);
-
+  const { classSelectedCallback, options, callbackSetOptions } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   onAuthStateChanged(auth, (user) => {
     if (user && auth) {
       setCurUser(user);
@@ -80,7 +79,12 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         if (docSnap?.data()?.classes) {
           const array = [...docSnap.data().classes.map((classDetails) => classDetails.classID)];
           callbackSetOptions(array);
-          classSelectedCallback(docSnap.data().classes[0].classID);
+          if (!!localStorage.getItem('selectedID') === false) {
+            classSelectedCallback(docSnap.data().classes[0].classID);
+            localStorage.setItem('selectedID', docSnap.data().classes[0].classID);
+          } else {
+            classSelectedCallback(localStorage.getItem('selectedID'));
+          }
         }
       });
     }

@@ -48,7 +48,8 @@ export default function SubmissionsViewer({ assignmentName }) {
 
   const [curUser, setCurUser] = React.useState();
   const [docs, setDocs] = React.useState([]);
-  const { classSelected } = React.useContext(MyContext);
+  // const { classSelected } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   console.log(assignmentName);
   const auth = getAuth();
   const navigate = useNavigate();

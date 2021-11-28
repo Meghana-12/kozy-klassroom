@@ -37,7 +37,9 @@ export default function Announcements() {
   const [docs, setDocs] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [curUser, setCurUser] = React.useState();
-  const { classSelected } = React.useContext(MyContext);
+  // const { classSelected } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
+  const [dbUser, setdbUser] = React.useState();
   const handleClose = () => setOpen(false);
   const handleAddPost = () => {
     setOpen(true);
@@ -47,6 +49,14 @@ export default function Announcements() {
       setCurUser(user);
     }
   });
+  React.useEffect(() => {
+    if (curUser) {
+      const docRef = doc(db, 'users', curUser?.email);
+      getDoc(docRef).then((docSnap) => {
+        setdbUser(docSnap?.data());
+      });
+    }
+  }, [curUser]);
   React.useEffect(() => {
     if (classSelected) {
       const docRef = collection(db, 'classes', classSelected, 'announcements');
@@ -63,25 +73,37 @@ export default function Announcements() {
 
   return (
     <Grid container sx={{ p: 2 }} flexDirection="row">
-      <Typography variant="h3" noWrap>
-        {' '}
-        Announcements
-      </Typography>
-      <Box sx={{ flexGrow: 1 }} />
-      <Button onClick={handleAddPost}> + New Post</Button>
-      <Grid item xs={12}>
-        {docs?.map((data) => (
-          <AnnouncementCard key={data.deadline} data={data} />
-        ))}
-      </Grid>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <AnnouncementModal curUser={curUser} setOpen={setOpen} />
-      </Modal>
+      <>
+        <Typography variant="h3" noWrap>
+          {' '}
+          Announcements
+        </Typography>
+        <Box sx={{ flexGrow: 1 }} />
+        <Button onClick={handleAddPost}> + New Post</Button>
+        <Grid item xs={12}>
+          {docs?.length > 0 ? (
+            <>
+              {docs?.map((data) => (
+                <AnnouncementCard key={data.deadline} data={data} />
+              ))}
+            </>
+          ) : (
+            <Typography variant="subtitle" component="div" sx={{ m: 'auto', mt: 10 }}>
+              {dbUser?.type === 'instructor'
+                ? 'There are no Announcements!\nPlease create a new assigment or post!'
+                : 'There are no Announcements!\nPlease come back later, the new announcements will be shown here!\n Feel free to create a new post!'}
+            </Typography>
+          )}
+        </Grid>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <AnnouncementModal curUser={curUser} setOpen={setOpen} />
+        </Modal>
+      </>
     </Grid>
   );
 }

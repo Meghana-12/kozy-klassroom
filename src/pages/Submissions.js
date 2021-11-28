@@ -12,8 +12,8 @@ import { auth, db } from '../firebase/initFirebase';
 export const Submissions = () => {
   const [curUser, setCurUser] = React.useState();
   const [docs, setDocs] = React.useState([]);
-  const { classSelected } = React.useContext(MyContext);
-
+  // const { classSelected } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   const navigate = useNavigate();
   onAuthStateChanged(auth, (user) => {
     if (user) {

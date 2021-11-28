@@ -13,7 +13,8 @@ import { AssignmentUploader } from '../components-used/Assignments/AssignmentUpl
 // ----------------------------------------------------------------------
 
 export default function Assignments() {
-  const { classSelected } = React.useContext(MyContext);
+  // const { classSelected } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   const [curUser, setCurUser] = React.useState(null);
   const [dbUser, setdbUser] = React.useState();
   onAuthStateChanged(auth, (user) => {

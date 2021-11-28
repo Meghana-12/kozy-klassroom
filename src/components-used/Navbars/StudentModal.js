@@ -22,7 +22,8 @@ const style = {
   p: 4
 };
 function StudentModal({ curUser, setOptions, setOpen }) {
-  const { classSelectedCallback, classSelected } = React.useContext(MyContext);
+  const { classSelectedCallback } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   const [classExists, setClassExists] = React.useState(false);
   const [pwdCheck, setPwdCheck] = React.useState(false);
   const handleSubmit = (event) => {

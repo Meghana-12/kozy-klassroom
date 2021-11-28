@@ -19,7 +19,8 @@ const style = {
   p: 4
 };
 function AnnouncementModal({ setOpen, title }) {
-  const { classSelected } = React.useContext(MyContext);
+  // const { classSelected } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   const [curUser, setCurUser] = React.useState(null);
 
   onAuthStateChanged(auth, (user) => {

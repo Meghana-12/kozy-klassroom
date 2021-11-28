@@ -11,8 +11,10 @@ import { auth, db } from '../../firebase/initFirebase';
 
 export default function ClassSelect() {
   const { classSelected, classSelectedCallback, options } = React.useContext(MyContext);
+  const classSelectedLocal = localStorage.getItem('selectedID');
   const handleChange = (event) => {
     classSelectedCallback(event.target.value);
+    localStorage.setItem('selectedID', event.target.value);
   };
   return (
     <Box sx={{ minWidth: 120, ml: 3, mr: 3, m: 2 }}>
@@ -23,7 +25,7 @@ export default function ClassSelect() {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={classSelected}
+              value={classSelectedLocal || classSelected}
               label="ClassID"
               onChange={handleChange}
             >

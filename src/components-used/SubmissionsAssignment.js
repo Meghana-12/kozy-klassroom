@@ -25,7 +25,8 @@ export default function SubmissionsAssignment() {
   const [docs, setDocs] = React.useState([]);
   const queryName = useQuery();
 
-  const { classSelected, classSelectedCallback } = React.useContext(MyContext);
+  const { classSelectedCallback } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   const navigate = useNavigate();
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -44,6 +45,7 @@ export default function SubmissionsAssignment() {
     }
   }, [curUser, classSelected, navigate, queryName]);
   classSelectedCallback(queryName.get('classid'));
+  localStorage.setItem('selectedID', queryName.get('classid'));
   const cur = new Date();
   const status = docs[0]?.deadline?.toDate() > cur ? 'success' : 'banned';
   const formatedDeadline = docs[0]?.deadline?.toDate().toLocaleString();

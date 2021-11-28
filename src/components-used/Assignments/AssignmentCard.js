@@ -11,7 +11,8 @@ import { MyContext } from '../../utils/context';
 import Label from '../../components/Label';
 
 export default function AssignmentCard({ name, deadline, totalScore }) {
-  const { classSelected } = React.useContext(MyContext);
+  // const { classSelected } = React.useContext(MyContext);
+  const classSelected = localStorage.getItem('selectedID');
   const cur = new Date();
   const status = deadline.toDate() > cur ? 'success' : 'banned';
   return (
