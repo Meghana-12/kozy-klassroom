@@ -38,6 +38,7 @@ Learning Management System (Submission Portal + Forum)
     
 ## Its up you people! 
 Checkout the project https://kozy-klassroom.web.app/
+Youtube Demo Link : https://www.youtube.com/watch?v=GALgcSnLR4w
 
 ## Tech Stack used : 
 ReactJS, Firebase, Material UI,React Router DOM
