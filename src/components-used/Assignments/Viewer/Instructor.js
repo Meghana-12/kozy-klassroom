@@ -35,7 +35,8 @@ import { getComparator, applySortFilter } from '../viewerFunctions';
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'total', label: 'Total Score', alignRight: false },
-  { id: 'deadline', label: 'Deadline', alignCenter: true },
+  { id: 'deadline', label: 'Deadline', alignRight: false },
+  { id: 'download', lable: 'Download', alignRight: false },
   { id: '' }
 ];
 
@@ -71,8 +72,8 @@ export default function InstructorAssignmentsViewer() {
           querySnapshot.forEach((doc) => {
             console.log('query', doc.data());
             assignments.push(doc.data());
-            setDocs(assignments);
           });
+          setDocs(assignments);
         });
       }
     }
@@ -82,33 +83,6 @@ export default function InstructorAssignmentsViewer() {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = docs?.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -149,35 +123,19 @@ export default function InstructorAssignmentsViewer() {
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
                   rowCount={docs?.length}
-                  numSelected={selected.length}
                   onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredUsers
                     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     ?.map((row) => {
                       const { name, totalScore, deadline, publishedAt, url } = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
                       const cur = new Date();
                       const status = deadline > cur ? 'success' : 'banned';
                       const deadlineConverted = deadline?.toDate();
                       return (
-                        <TableRow
-                          hover
-                          key={JSON.stringify(publishedAt)}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, name)}
-                            />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
+                        <TableRow hover key={JSON.stringify(publishedAt)} tabIndex={-1}>
+                          <TableCell align="left">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               <Typography variant="subtitle2" noWrap>
                                 {name}
@@ -199,9 +157,6 @@ export default function InstructorAssignmentsViewer() {
                                 <Icon icon={downloadOutline} width={24} height={24} />
                               </Button>
                             </a>
-                          </TableCell>
-                          <TableCell align="right">
-                            <UserMoreMenu />
                           </TableCell>
                         </TableRow>
                       );
