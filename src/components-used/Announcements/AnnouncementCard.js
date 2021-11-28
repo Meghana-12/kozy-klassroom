@@ -80,7 +80,7 @@ export default function AnnouncementCard({ data }) {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Typography variant="caption" sx={{ flexShrink: 0, color: 'text.secondary' }}>
-            {`Author : ${data?.author} | Published at : ${publishedAtDate}`}
+            {`Author : ${data?.author} | Published at : ${String(publishedAtDate)}`}
           </Typography>
 
           <>

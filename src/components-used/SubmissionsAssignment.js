@@ -13,6 +13,7 @@ import { MyContext } from '../utils/context';
 import Page from '../components/Page';
 import { auth, storage, db } from '../firebase/initFirebase';
 import { AssignmentUploader } from './Assignments/AssignmentUploader';
+import Label from '../components/Label';
 
 function useQuery() {
   const { search } = useLocation();
@@ -43,7 +44,9 @@ export default function SubmissionsAssignment() {
     }
   }, [curUser, classSelected, navigate, queryName]);
   classSelectedCallback(queryName.get('classid'));
-  const formatedDeadline = docs[0]?.deadline;
+  const cur = new Date();
+  const status = docs[0]?.deadline?.toDate() > cur ? 'success' : 'banned';
+  const formatedDeadline = docs[0]?.deadline?.toDate().toLocaleString();
 
   return (
     <div>
@@ -52,9 +55,12 @@ export default function SubmissionsAssignment() {
       </Button>
       <Card sx={{ p: 2, m: 4 }}>
         <CardContent>
-          <Typography variant="h4"> Assignment Name: {docs[0]?.name}</Typography>
+          <Typography variant="h4"> {docs[0]?.name}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            Deadline: {String(formatedDeadline.toLocaleString())}{' '}
+            <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
+              {status === 'banned' ? `Deadline passed : ` : `Open till :`}
+              Deadline: {String(formatedDeadline)}{' '}
+            </Label>
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             Total Score: {docs[0]?.totalScore}

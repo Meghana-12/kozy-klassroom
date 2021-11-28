@@ -30,13 +30,11 @@ export default function AssignmentCard({ name, deadline, totalScore }) {
       </CardContent>
       <CardActions>
         <Box sx={{ flexGrow: 1 }} />
-        <Button
-          size="small"
-          href={`assignment?classid=${classSelected}&name=${name}`}
-          sx={{ mr: 2, mb: 1 }}
-        >
-          Learn More
-        </Button>
+        <Link to={`assignment?classid=${classSelected}&name=${name}`}>
+          <Button size="small" onClick={() => {}} sx={{ mr: 2, mb: 1 }}>
+            Learn More
+          </Button>
+        </Link>
       </CardActions>
     </Card>
   );
