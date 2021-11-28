@@ -132,50 +132,70 @@ export default function StudentAssignmentsViewer() {
       );
       console.log(storageRef);
       if (file) {
-        const uploadTask = uploadBytesResumable(storageRef, file);
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(`Upload is ${progress}% done`);
-            switch (snapshot.state) {
-              case 'paused':
-                alert('Upload is paused');
-                break;
-              case 'running':
-                console.log('Upload is running');
-                break;
-              default:
-                break;
-            }
-          },
-          (error) => {
-            console.log(error);
-          },
-          () => {
-            alert('done!');
-            const currentDate = new Date();
-            getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-              const docRef = doc(
-                db,
-                'classes',
-                classSelected,
-                'assignments',
-                assignmentName,
-                'submissions',
-                auth?.currentUser?.email
-              );
-              const docData = {
-                email: auth?.currentUser?.email,
-                submissionURL: url,
-                score: -1,
-                submissionTime: Timestamp.fromDate(currentDate)
-              };
+        try {
+          const uploadTask = uploadBytesResumable(storageRef, file);
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`Upload is ${progress}% done`);
+              switch (snapshot.state) {
+                case 'paused':
+                  alert('Upload is paused');
+                  break;
+                case 'running':
+                  console.log('Upload is running');
+                  break;
+                default:
+                  break;
+              }
+            },
+            (error) => {
+              console.log(error);
+            },
+            () => {
+              const currentDate = new Date();
+              getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                const getDocRef = doc(
+                  db,
+                  'classes',
+                  classSelected,
+                  'assignments',
+                  assignmentName,
+                  'submissions',
+                  auth?.currentUser?.email
+                );
 
-              setDoc(docRef, docData, { merge: true });
-            });
-          }
-        );
+                getDoc(getDocRef).then((docSnap) => {
+                  console.log(docSnap?.data());
+                  if (docSnap?.data()) {
+                    alert(`You've already submitted to the assignment${assignmentName}`);
+                  } else {
+                    const docRef = doc(
+                      db,
+                      'classes',
+                      classSelected,
+                      'assignments',
+                      assignmentName,
+                      'submissions',
+                      auth?.currentUser?.email
+                    );
+                    const docData = {
+                      email: auth?.currentUser?.email,
+                      submissionURL: url,
+                      score: -1,
+                      submissionTime: Timestamp.fromDate(currentDate)
+                    };
+                    setDoc(docRef, docData, { merge: true });
+                    alert('done!');
+                  }
+                });
+              });
+            }
+          );
+        } catch (err) {
+          alert('Please Provide File!');
+        }
       }
     }
   };
@@ -210,26 +230,6 @@ export default function StudentAssignmentsViewer() {
                       const cur = new Date();
                       const status = deadline.toDate() > cur ? 'success' : 'banned';
                       const deadlineConverted = deadline.toDate().toLocaleString();
-                      let submitted = false;
-                      if (name && db && classSelected && auth?.currentUser) {
-                        const docRef = doc(
-                          db,
-                          'classes',
-                          classSelected,
-                          'assignments',
-                          name,
-                          'submissions',
-                          auth?.currentUser?.email
-                        );
-
-                        getDoc(docRef).then((docSnap) => {
-                          if (docSnap?.data()) {
-                            submitted = true;
-                          } else {
-                            submitted = false;
-                          }
-                        });
-                      }
 
                       console.log(deadlineConverted, cur, status);
                       return (
@@ -266,19 +266,13 @@ export default function StudentAssignmentsViewer() {
                             </a>
                           </TableCell>
                           <TableCell align="center">
-                            {submitted === true ? (
-                              'Submitted'
-                            ) : (
-                              <>
-                                <Input type="file" onChange={handleChange} />
-                                <Button
-                                  variant="contained"
-                                  onClick={(event) => handleSubmit(event, name)}
-                                >
-                                  <Icon icon={cloudUploadOutline} width={24} height={24} />
-                                </Button>
-                              </>
-                            )}
+                            <Input type="file" onChange={handleChange} />
+                            <Button
+                              variant="contained"
+                              onClick={(event) => handleSubmit(event, name)}
+                            >
+                              <Icon icon={cloudUploadOutline} width={24} height={24} />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       );
