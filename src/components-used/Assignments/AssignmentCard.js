@@ -31,7 +31,9 @@ export default function AssignmentCard({ name, deadline, totalScore }) {
       </CardContent>
       <CardActions>
         <Box sx={{ flexGrow: 1 }} />
-        <Link to={`assignment?classid=${classSelected}&name=${name}`}>
+        <Link
+          to={`assignment?classid=${classSelected.replace(' ', '')}&name=${name.replace(' ', '')}`}
+        >
           <Button size="small" onClick={() => {}} sx={{ mr: 2, mb: 1 }}>
             Learn More
           </Button>

@@ -73,7 +73,7 @@ export const AssignmentUploader = (props) => {
                 'classes',
                 classSelected,
                 'assignments',
-                form?.name.trim()
+                form?.name.replace(' ', '')
               );
               getDoc(assignmentRef).then((docSnap) => {
                 if (docSnap?.data()) {

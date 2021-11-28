@@ -58,7 +58,7 @@ function InstructorModal({ curUser, setOpen, setOptions }) {
       };
       console.log(docData, curUser);
 
-      const docRef = doc(db, 'classes', classID.trim());
+      const docRef = doc(db, 'classes', classID.replace(' ', ''));
       getDoc(docRef).then((docSnap) => {
         if (docSnap.data()) {
           console.log(docSnap.data());
