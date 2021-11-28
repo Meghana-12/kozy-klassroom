@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton, Button, Modal } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton, Button, Modal, Typography } from '@mui/material';
 // components
 import { getDoc, doc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -97,6 +97,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
             <Icon icon={menu2Fill} />
           </IconButton>
         </MHidden>
+        <Typography>{classSelected?.name}</Typography>
         <Box sx={{ flexGrow: 1 }} />
         <ClassSelect id="class-id" />
 

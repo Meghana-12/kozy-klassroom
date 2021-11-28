@@ -68,7 +68,13 @@ export const AssignmentUploader = (props) => {
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-              const assignmentRef = doc(db, 'classes', classSelected, 'assignments', form?.name);
+              const assignmentRef = doc(
+                db,
+                'classes',
+                classSelected,
+                'assignments',
+                form?.name.trim()
+              );
               getDoc(assignmentRef).then((docSnap) => {
                 if (docSnap?.data()) {
                   alert(

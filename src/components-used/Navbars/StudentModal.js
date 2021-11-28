@@ -32,7 +32,7 @@ function StudentModal({ curUser, setOptions, setOpen }) {
     const classID = data.get('classID');
     const password = data.get('password');
     try {
-      const docRef = doc(db, 'classes', classID);
+      const docRef = doc(db, 'classes', classID.trim());
       console.log(docRef);
       getDoc(docRef).then((docSnap) => {
         if (docSnap.data() && curUser) {
