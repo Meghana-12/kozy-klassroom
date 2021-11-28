@@ -42,7 +42,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function InstructorAssignmentsViewer() {
+export default function InstructorAssignmentsViewer({ change }) {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -52,7 +52,7 @@ export default function InstructorAssignmentsViewer() {
 
   const [curUser, setCurUser] = React.useState();
   const [docs, setDocs] = React.useState([]);
-
+  console.log(change);
   // const { classSelected } = React.useContext(MyContext);
   const classSelected = localStorage.getItem('selectedID');
   const auth = getAuth();
@@ -76,7 +76,7 @@ export default function InstructorAssignmentsViewer() {
         });
       }
     }
-  }, [curUser, classSelected, navigate]);
+  }, [curUser, classSelected, navigate, change]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';

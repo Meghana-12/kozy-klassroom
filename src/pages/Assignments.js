@@ -17,6 +17,11 @@ export default function Assignments() {
   const classSelected = localStorage.getItem('selectedID');
   const [curUser, setCurUser] = React.useState(null);
   const [dbUser, setdbUser] = React.useState();
+  const [change, setChange] = React.useState(false);
+  // const setChangeCallback = React.useCallback((value) => {
+  //   setChange(value);
+  // }, []);
+  console.log(change);
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setCurUser(user);
@@ -55,12 +60,13 @@ export default function Assignments() {
                   user={curUser}
                   storage={storage}
                   curUser={curUser}
+                  setChangeCallback={setChange}
                 />
               </Card>
             )}
 
             {dbUser?.type === 'instructor' ? (
-              <InstructorAssignmentsViewer />
+              <InstructorAssignmentsViewer change={change} />
             ) : (
               <StudentAssignmentsViewer classID={classSelected} />
             )}

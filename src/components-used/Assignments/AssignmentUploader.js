@@ -11,7 +11,7 @@ import { db } from '../../firebase/initFirebase';
 
 export const AssignmentUploader = (props) => {
   const today = new Date();
-  const { user, storage, classSelected, curUser } = props;
+  const { user, storage, classSelected, curUser, setChangeCallback } = props;
   const [dbUser, setdbUser] = React.useState();
   const [file, setFile] = React.useState(null);
   const [form, setForm] = React.useState({ name: '', score: '-1', deadline: today });
@@ -67,7 +67,6 @@ export const AssignmentUploader = (props) => {
             console.log(error);
           },
           () => {
-            alert('done!');
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
               const assignmentRef = doc(db, 'classes', classSelected, 'assignments', form?.name);
               const assignmentData = {
@@ -96,6 +95,8 @@ export const AssignmentUploader = (props) => {
                 url
               };
               setDoc(announcementRef, annnouncementData);
+              setChangeCallback((prev) => !prev);
+              alert('done!');
             });
           }
         );
