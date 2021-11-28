@@ -67,7 +67,6 @@ export default function InstructorAssignmentsViewer() {
       const docRef = collection(db, 'classes', classSelected, 'assignments');
       if (docRef) {
         getDocs(docRef).then((querySnapshot) => {
-          // console.log('query', querySnapshot?.data());
           const assignments = [];
           querySnapshot.forEach((doc) => {
             console.log('query', doc.data());

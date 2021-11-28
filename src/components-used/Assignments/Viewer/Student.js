@@ -1,6 +1,4 @@
-import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
 import React, { useState } from 'react';
 import downloadOutline from '@iconify/icons-eva/download-outline';
 import cloudUploadOutline from '@iconify/icons-eva/cloud-upload-outline';
@@ -10,9 +8,6 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
-  Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
@@ -20,46 +15,29 @@ import {
   Typography,
   TableContainer,
   TablePagination,
-  TextField
+  Button
 } from '@mui/material';
 // components
-import {
-  setDoc,
-  doc,
-  getDoc,
-  getDocs,
-  collection,
-  query,
-  arrayUnion,
-  Timestamp
-} from 'firebase/firestore';
-import moment from 'moment';
-import downloadFill from '@iconify/icons-eva/edit-fill';
+import { setDoc, doc, getDoc, getDocs, collection, Timestamp } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import Input from '@mui/material/Input';
-import { DateTimePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Page from '../../../components/Page';
 import Label from '../../../components/Label';
 import Scrollbar from '../../../components/Scrollbar';
 import SearchNotFound from '../../../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../../../components/_dashboard/user';
+import { UserListHead, UserListToolbar } from '../../../components/_dashboard/user';
 
 import { MyContext } from '../../../utils/context';
 import { db, storage } from '../../../firebase/initFirebase';
 /// / material
 // components
-import docs from '../../../_mocks_/user';
-import { descendingComparator, getComparator, applySortFilter } from '../viewerFunctions';
+import { getComparator, applySortFilter } from '../viewerFunctions';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'score', label: 'Score', alignRight: false },
   { id: 'total', label: 'Total Score', alignRight: false },
-  // { id: 'average', label: 'Average Score', alignRight: false },
   { id: 'deadline', label: 'Deadline', alignRight: false },
 
   { id: 'download', label: 'Download Assignment', alignRight: false },
@@ -69,7 +47,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function StudentAssignmentsViewer({ classID }) {
+export default function StudentAssignmentsViewer() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -94,7 +72,6 @@ export default function StudentAssignmentsViewer({ classID }) {
       const docRef = collection(db, 'classes', classSelected, 'assignments');
       if (docRef) {
         getDocs(docRef).then((querySnapshot) => {
-          // console.log('query', querySnapshot?.data());
           const assignments = [];
           querySnapshot.forEach((doc) => {
             console.log('query', doc.data());
@@ -120,24 +97,6 @@ export default function StudentAssignmentsViewer({ classID }) {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -184,7 +143,7 @@ export default function StudentAssignmentsViewer({ classID }) {
                 alert('Upload is paused');
                 break;
               case 'running':
-                // alert('Upload is running');
+                console.log('Upload is running');
                 break;
               default:
                 break;
@@ -273,7 +232,6 @@ export default function StudentAssignmentsViewer({ classID }) {
                       }
 
                       console.log(deadlineConverted, cur, status);
-                      // add number of students submitted, average score, highest score, difficulty level based on scores
                       return (
                         <TableRow
                           hover
@@ -285,15 +243,12 @@ export default function StudentAssignmentsViewer({ classID }) {
                         >
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              {/* <Avatar alt={name} src={avatarUrl} /> */}
-                              <Typography variant="subtitle2" noWrap>
+                              <Typography variant="subtitle2" noWrap sx={{ pl: 2 }}>
                                 {name}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          {/* <TableCell align="left">{score}</TableCell> */}
                           <TableCell align="left">{totalScore}</TableCell>
-                          {/* <TableCell align="left">{}</TableCell> */}
                           <TableCell align="left">
                             <Label
                               variant="ghost"

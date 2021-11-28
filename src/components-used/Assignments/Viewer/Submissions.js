@@ -7,7 +7,6 @@ import {
   Table,
   Stack,
   Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
@@ -16,7 +15,7 @@ import {
   TableContainer,
   TablePagination
 } from '@mui/material';
-import { doc, getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import PropTypes from 'prop-types';
 import Page from '../../../components/Page';
@@ -97,24 +96,6 @@ export default function SubmissionsViewer({ assignmentName }) {
     setSelected([]);
   };
 
-  const handleClick = (event, email) => {
-    const selectedIndex = selected.indexOf(email);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, email);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -173,7 +154,7 @@ export default function SubmissionsViewer({ assignmentName }) {
                         >
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Typography variant="subtitle2" noWrap>
+                              <Typography variant="subtitle2" noWrap sx={{ pl: 2 }}>
                                 {email}
                               </Typography>
                             </Stack>
