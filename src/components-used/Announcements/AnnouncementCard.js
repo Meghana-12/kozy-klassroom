@@ -45,7 +45,7 @@ AnnouncementCard.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-export default function AnnouncementCard({ data }) {
+export default function AnnouncementCard({ data, setChange }) {
   const deadlineDate = data.deadline?.toDate();
   const [open, setOpen] = React.useState(false);
   const publishedAtDate = data.publishedDate?.toDate().toLocaleString();
@@ -156,7 +156,7 @@ export default function AnnouncementCard({ data }) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <ReplyModal title={title} setOpen={setOpen} />
+        <ReplyModal title={title} setOpen={setOpen} setChange={setChange} />
       </Modal>
     </>
   );

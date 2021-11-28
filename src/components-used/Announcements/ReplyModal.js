@@ -18,7 +18,7 @@ const style = {
   boxShadow: 24,
   p: 4
 };
-function AnnouncementModal({ setOpen, title }) {
+function AnnouncementModal({ setOpen, title, setChange }) {
   // const { classSelected } = React.useContext(MyContext);
   const classSelected = localStorage.getItem('selectedID');
   const [curUser, setCurUser] = React.useState(null);
@@ -47,6 +47,7 @@ function AnnouncementModal({ setOpen, title }) {
     };
     updateDoc(docRef, docData, { merge: true });
     setOpen(false);
+    setChange((prev) => !prev);
   };
   return (
     <>

@@ -37,7 +37,7 @@ export default function Announcements() {
   const [docs, setDocs] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [curUser, setCurUser] = React.useState();
-  // const { classSelected } = React.useContext(MyContext);
+  const [change, setChange] = React.useState(false);
   const classSelected = localStorage.getItem('selectedID');
   const [dbUser, setdbUser] = React.useState();
   const handleClose = () => setOpen(false);
@@ -69,7 +69,7 @@ export default function Announcements() {
         setDocs(announcements);
       });
     }
-  }, [classSelected]);
+  }, [classSelected, change]);
 
   return (
     <Page title="Announcements | Kozy Klassroom">
@@ -85,7 +85,7 @@ export default function Announcements() {
             {docs?.length > 0 ? (
               <>
                 {docs?.map((data) => (
-                  <AnnouncementCard key={data.deadline} data={data} />
+                  <AnnouncementCard key={data.deadline} data={data} setChange={setChange} />
                 ))}
               </>
             ) : (
@@ -102,7 +102,7 @@ export default function Announcements() {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <AnnouncementModal curUser={curUser} setOpen={setOpen} />
+            <AnnouncementModal curUser={curUser} setOpen={setOpen} setChange={setChange} />
           </Modal>
         </>
       </Grid>

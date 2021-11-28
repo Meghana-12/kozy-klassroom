@@ -33,7 +33,7 @@ const style = {
   boxShadow: 24,
   p: 4
 };
-function AnnouncementModal({ curUser, setOpen }) {
+function AnnouncementModal({ curUser, setOpen, setChange }) {
   // const { classSelected } = React.useContext(MyContext);
   const classSelected = localStorage.getItem('selectedID');
   const handleSubmit = (event) => {
@@ -53,6 +53,7 @@ function AnnouncementModal({ curUser, setOpen }) {
 
     setDoc(docRef, docData, { merge: true });
     setOpen(false);
+    setChange((prev) => !prev);
   };
   return (
     <>
