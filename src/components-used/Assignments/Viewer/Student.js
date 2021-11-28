@@ -251,16 +251,27 @@ export default function StudentAssignmentsViewer({ classID }) {
                       const cur = new Date();
                       const status = deadline.toDate() > cur ? 'success' : 'banned';
                       const deadlineConverted = deadline.toDate();
-                      const docRef = doc(
-                        db,
-                        'classes',
-                        classSelected,
-                        'assignments',
-                        name,
-                        'submissions',
-                        auth?.currentUser?.email
-                      );
-                      const submitted = getDoc(docRef);
+                      let submitted = false;
+                      if (name && db && classSelected && auth?.currentUser) {
+                        const docRef = doc(
+                          db,
+                          'classes',
+                          classSelected,
+                          'assignments',
+                          name,
+                          'submissions',
+                          auth?.currentUser?.email
+                        );
+
+                        getDoc(docRef).then((docSnap) => {
+                          if (docSnap?.data()) {
+                            submitted = true;
+                          } else {
+                            submitted = false;
+                          }
+                        });
+                      }
+
                       console.log(deadlineConverted, cur, status);
                       // add number of students submitted, average score, highest score, difficulty level based on scores
                       return (
@@ -306,7 +317,7 @@ export default function StudentAssignmentsViewer({ classID }) {
                             </a>
                           </TableCell>
                           <TableCell align="center">
-                            {submitted ? (
+                            {submitted === true ? (
                               'Submitted'
                             ) : (
                               <>

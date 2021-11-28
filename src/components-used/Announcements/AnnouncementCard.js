@@ -83,25 +83,25 @@ export default function AnnouncementCard({ data }) {
             {`Author : ${data?.author} | Published at : ${publishedAtDate}`}
           </Typography>
 
-          {data?.replies?.length > 0 && (
-            <>
-              <CardActions>
-                {data?.type !== 'assignment' && (
-                  <>
+          <>
+            <CardActions>
+              {data?.type !== 'assignment' && (
+                <>
+                  {' '}
+                  <Button
+                    onClick={() => {
+                      setTitle(data.title);
+                      setOpen(true);
+                    }}
+                  >
                     {' '}
-                    <Button
-                      onClick={() => {
-                        setTitle(data.title);
-                        setOpen(true);
-                      }}
-                    >
-                      {' '}
-                      Reply{' '}
-                    </Button>
-                    {data?.replies?.length > 0 && <hr />}
-                  </>
-                )}
-                <Box sx={{ flexGrow: 1 }} />
+                    Reply{' '}
+                  </Button>
+                </>
+              )}
+              <Box sx={{ flexGrow: 1 }} />
+              {data?.replies?.length > 0 && <hr />}
+              {data?.replies?.length > 0 && (
                 <Button type="text" size="small" onClick={handleExpandClick}>
                   View Replies
                   <ExpandMore expand={expanded} aria-expanded={expanded} aria-label="show more">
@@ -109,45 +109,42 @@ export default function AnnouncementCard({ data }) {
                     <ExpandMoreIcon />
                   </ExpandMore>
                 </Button>
-              </CardActions>
-              <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                  {data?.type !== 'assignment' &&
-                    data?.replies?.map((item) => {
-                      const replyPublishedAt = item?.postedAt?.toDate();
-                      return (
-                        <div key={String(item?.publishedDate)}>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: 'text.secondary', pt: 1, pl: 1 }}
-                          >
-                            {item.reply}
-                          </Typography>
+              )}
+            </CardActions>
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+              <CardContent>
+                {data?.type !== 'assignment' &&
+                  data?.replies?.map((item) => {
+                    const replyPublishedAt = item?.postedAt?.toDate();
+                    return (
+                      <div key={String(item?.publishedDate)}>
+                        <Typography variant="body2" sx={{ color: 'text.secondary', pt: 1, pl: 1 }}>
+                          {item.reply}
+                        </Typography>
 
-                          <Grid container flexDirection="row" sx={{ p: 1 }} spacing={2}>
-                            <Box sx={{ flexGrow: 1 }} />
-                            <Grid item sx={{ alignSelf: 'center' }}>
-                              <Typography
-                                variant="caption"
-                                sx={{ flexShrink: 0, color: 'text.secondary' }}
-                              >
-                                {' '}
-                                {`Author : ${item?.author} | Published at : ${replyPublishedAt}`}
-                              </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Avatar src={item?.photoURL} sx={{ width: 24, height: 24 }} />
-                            </Grid>
+                        <Grid container flexDirection="row" sx={{ p: 1 }} spacing={2}>
+                          <Box sx={{ flexGrow: 1 }} />
+                          <Grid item sx={{ alignSelf: 'center' }}>
+                            <Typography
+                              variant="caption"
+                              sx={{ flexShrink: 0, color: 'text.secondary' }}
+                            >
+                              {' '}
+                              {`Author : ${item?.author} | Published at : ${replyPublishedAt}`}
+                            </Typography>
                           </Grid>
+                          <Grid item>
+                            <Avatar src={item?.photoURL} sx={{ width: 24, height: 24 }} />
+                          </Grid>
+                        </Grid>
 
-                          <hr />
-                        </div>
-                      );
-                    })}
-                </CardContent>
-              </Collapse>
-            </>
-          )}
+                        <hr />
+                      </div>
+                    );
+                  })}
+              </CardContent>
+            </Collapse>
+          </>
         </CardContent>
       </Card>
       <Modal

@@ -78,8 +78,14 @@ export const AssignmentUploader = (props) => {
                 publishedAt: Timestamp.fromDate(new Date()),
                 url
               };
-              setDoc(assignmentRef, assignmentData, { merge: true });
-              const announcementRef = collection(db, 'classes', classSelected, 'announcements');
+              setDoc(assignmentRef, assignmentData);
+              const announcementRef = doc(
+                db,
+                'classes',
+                classSelected,
+                'announcements',
+                form?.name
+              );
               const annnouncementData = {
                 type: 'assignment',
                 name: form?.name,
@@ -89,7 +95,7 @@ export const AssignmentUploader = (props) => {
                 publishedAt: Timestamp.fromDate(new Date()),
                 url
               };
-              addDoc(announcementRef, annnouncementData);
+              setDoc(announcementRef, annnouncementData);
             });
           }
         );
