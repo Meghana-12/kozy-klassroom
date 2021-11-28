@@ -68,6 +68,9 @@ export default function AnnouncementCard({ data }) {
               </Grid>
             )}
             <Grid item>
+              {data.type === 'assignment' && (
+                <Typography variant="subtitle2">New Assignment created!</Typography>
+              )}
               <Typography variant="h4">
                 {data.type === 'assignment' ? `${data.name} ` : data.title}
               </Typography>
