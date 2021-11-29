@@ -46,6 +46,12 @@ And please don't use same email ID to login in as a student and instructor.
 ## Tech Stack used : 
 ReactJS, Firebase, Material UI,React Router DOM
 
+## Source code 
+
+To run this project locally, please download the assignment and run:         
+        ``npm i``   
+        ``npm start``.    
+
 ## Details about the Template used : 
 ### Minimal [(Free version)](https://minimal-kit-react.vercel.app/)
 ![license](https://img.shields.io/badge/license-MIT-blue.svg)
