@@ -38,7 +38,9 @@ Learning Management System (Submission Portal + Forum)
     
 ## Its up you people! 
 Checkout the project https://kozy-klassroom.web.app/
-Youtube Demo Link : https://www.youtube.com/watch?v=GALgcSnLR4w
+
+Please wait for an alert after assignment, submission upload, class room creatation, joining one etc it might take a while to get an alert. 
+(And reload the page if you are unable to see the updated content.)
 
 ## Tech Stack used : 
 ReactJS, Firebase, Material UI,React Router DOM
